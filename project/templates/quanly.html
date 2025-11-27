@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý - Báo cáo doanh thu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-warning shadow-sm">
+    <div class="container-fluid">
+        <span class="navbar-brand fw-bold">📈 Dashboard Quản Lý - Xin chào {{ user }}</span>
+        <a href="{{ url_for('main.logout') }}" class="btn btn-dark btn-sm">Đăng xuất</a>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Báo cáo hoạt động kinh doanh</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3 h-100">
+                <div class="card-header">Tổng doanh thu hôm nay</div>
+                <div class="card-body">
+                    <h3 class="card-title">15,500,000 đ</h3>
+                    <p class="card-text">Tăng 20% so với hôm qua.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3 h-100">
+                <div class="card-header">Số đơn hàng đã phục vụ</div>
+                <div class="card-body">
+                    <h3 class="card-title">124 Đơn</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3 h-100">
+                <div class="card-header">Món bán chạy nhất</div>
+                <div class="card-body">
+                    <h3 class="card-title">Lẩu Thái</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header fw-bold">Biểu đồ doanh thu tuần</div>
+        <div class="card-body text-center" style="height: 300px; line-height: 300px; background: #eee;">
+            (Khu vực hiển thị biểu đồ Chart.js sẽ được thêm sau)
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

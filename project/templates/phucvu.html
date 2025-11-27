@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sơ đồ bàn | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { height: 100vh; overflow: hidden; background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        /* Sidebar */
+        .sidebar { width: 250px; height: 100vh; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: fixed; z-index: 1000; }
+        .user-panel { padding: 30px 20px; text-align: center; border-bottom: 1px dashed #eee; margin-bottom: 20px; }
+        .user-avatar { font-size: 50px; color: #4e73df; margin-bottom: 10px; }
+        .user-name { font-weight: 800; font-size: 1.1rem; color: #333; }
+        .nav-link { color: #6c757d; font-weight: 600; padding: 15px 30px; display: flex; align-items: center; gap: 15px; transition: 0.3s; border-left: 5px solid transparent; }
+        .nav-link:hover { background: #f8f9fa; color: #4e73df; }
+        .nav-link.active { background: #f1f5fe; color: #4e73df; border-left-color: #4e73df; }
+        .logout-link { margin-top: auto; margin-bottom: 20px; color: #e74a3b !important; }
+
+        /* Main Content */
+        .main-content { margin-left: 250px; padding: 40px; height: 100vh; overflow-y: auto; }
+
+        /* Tabs & Table */
+        .floor-tabs { background: white; padding: 8px; border-radius: 50px; display: inline-flex; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .floor-tabs .nav-link { border-radius: 40px; padding: 10px 40px; color: #555; border: none; margin: 0; }
+        .floor-tabs .nav-link.active { background: #4e73df; color: white; box-shadow: 0 4px 8px rgba(78, 115, 223, 0.4); }
+
+        .table-box { height: 140px; border-radius: 16px; position: relative; cursor: pointer; transition: transform 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .table-box:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .table-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; font-weight: 800; z-index: 2; }
+        .table-status-text { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font-size: 0.85rem; font-weight: 600; z-index: 2; }
+        .table-capacity { position: absolute; top: 10px; right: 15px; font-size: 0.9rem; background: rgba(255,255,255,0.5); padding: 2px 8px; border-radius: 10px; font-weight: bold; z-index: 3; }
+        .bg-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; transform: rotate(-15deg); }
+
+        /* Màu sắc (Tương ứng với logic Python) */
+        .bg-trong { background-color: #ffffff; border: 2px solid #a6e3ce; color: #333; }
+        .bg-trong .table-status-text { color: #888; }
+        .bg-trong .bg-icon { color: #a6e3ce; opacity: 0.2; }
+
+        .bg-cokhach { background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); border: none; color: white; }
+        .bg-cokhach .table-title { text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .bg-cokhach .table-status-text { color: rgba(255,255,255,0.9); }
+        .bg-cokhach .bg-icon { color: white; opacity: 0.3; }
+
+        .bg-dattruoc { background-color: #e0e7ff; border: 2px dashed #818cf8; color: #4338ca; }
+        .bg-dattruoc .table-title { color: #4338ca; }
+        .bg-dattruoc .table-status-text { color: #6366f1; }
+        .bg-dattruoc .bg-icon { color: #4338ca; opacity: 0.1; }
+
+        /* Noti Badge */
+        .noti-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; display: none; }
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="user-panel"><i class="fas fa-user-circle user-avatar"></i><div class="user-name">{{ user }}</div></div>
+    <div class="d-flex flex-column flex-grow-1">
+        <a href="#" class="nav-link active"><i class="fas fa-th-large fa-lg"></i> Sơ đồ bàn</a>
+        <a href="{{ url_for('main.menu') }}" class="nav-link"><i class="fas fa-utensils fa-lg"></i> Gọi món</a>
+        <a href="{{ url_for('main.order_list') }}" class="nav-link"><i class="fas fa-clipboard-list fa-lg"></i> Danh sách đơn</a>
+        <a href="{{ url_for('main.logout') }}" class="nav-link logout-link"><i class="fas fa-sign-out-alt fa-lg"></i> Đăng xuất</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold text-dark m-0">Quản lý sơ đồ bàn</h2>
+        <ul class="nav floor-tabs" id="floorTabs">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#floor1">Tầng 1 (1-10)</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#floor2">Tầng 2 (11-20)</button></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="floor1">
+            <div class="row g-4">
+                {% for ban in list_ban %}
+                    {% if ban.Tang == 1 %}
+                    <div class="{% if ban.SoGhe == 8 %} col-xl-6 col-lg-6 {% else %} col-xl-3 col-lg-3 {% endif %} col-md-6">
+
+                        <div class="table-box {{ ban.css_class }}"
+                             onclick="confirmSelectTable('{{ ban.SoBan }}', '{{ ban.TrangThai }}')">
+
+                            <div class="table-capacity"><i class="fas fa-user-friends"></i> {{ ban.SoGhe }}</div>
+                            <div class="table-title">Bàn {{ ban.SoBan }}</div>
+                            <div class="table-status-text">{{ ban.status_text }}</div> <i class="fas {{ ban.icon_class }} bg-icon"></i> </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="floor2">
+            <div class="row g-4">
+                {% for ban in list_ban %}
+                    {% if ban.Tang == 2 %}
+                    <div class="{% if ban.SoGhe == 8 %} col-xl-6 col-lg-6 {% else %} col-xl-3 col-lg-3 {% endif %} col-md-6">
+                        <div class="table-box {{ ban.css_class }}"
+                             onclick="confirmSelectTable('{{ ban.SoBan }}', '{{ ban.TrangThai }}')">
+                            <div class="table-capacity"><i class="fas fa-user-friends"></i> {{ ban.SoGhe }}</div>
+                            <div class="table-title">Bàn {{ ban.SoBan }}</div>
+                            <div class="table-status-text">{{ ban.status_text }}</div>
+                            <i class="fas {{ ban.icon_class }} bg-icon"></i>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title fw-bold">Xác nhận chọn bàn</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <h1 class="fw-bold text-primary mb-3" id="modalTableNum">0</h1>
+        <p class="text-muted">Bạn có muốn mở menu gọi món cho bàn này không?</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center pb-4">
+        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-primary px-4 fw-bold" id="btnGoToMenu">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 1. LOGIC CHỌN BÀN
+    let selectedTableId = null;
+    function confirmSelectTable(tableId, status) {
+        if (status === 'DatTruoc') return alert("🚫 Bàn này ĐÃ ĐẶT TRƯỚC!");
+        if (status === 'CoKhach') return alert("🚫 Bàn này ĐANG CÓ KHÁCH!");
+
+        selectedTableId = tableId;
+        document.getElementById('modalTableNum').innerText = "Bàn " + tableId;
+        const btn = document.getElementById('btnGoToMenu');
+        btn.onclick = function() { window.location.href = "{{ url_for('main.menu') }}?table_id=" + selectedTableId; };
+        new bootstrap.Modal(document.getElementById('confirmModal')).show();
+    }
+
+    // 2. LOGIC THÔNG BÁO (Chung cho các trang)
+    const notiSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+    let currentNotiCount = 0;
+
+    function checkNotifications() {
+        fetch('/api/get-notifications').then(r => r.json()).then(data => {
+            if (data.length > 0 && data.length > currentNotiCount) {
+                showToast(data[0].msg);
+                notiSound.play().catch(e => {});
+            }
+            currentNotiCount = data.length;
+        });
+    }
+    function showToast(msg) {
+        document.getElementById('toastContainer').insertAdjacentHTML('beforeend', `<div class="toast show align-items-center text-white bg-success border-0 mb-2 shadow"><div class="d-flex"><div class="toast-body fw-bold"><i class="fas fa-check-circle me-2"></i> ${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
+        setTimeout(() => { const t = document.querySelectorAll('.toast'); if(t.length > 0) t[0].remove(); }, 5000);
+    }
+    setInterval(checkNotifications, 3000);
+</script>
+</body>
+</html>

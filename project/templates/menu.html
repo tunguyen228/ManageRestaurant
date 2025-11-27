@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Gọi Món | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { height: 100vh; overflow: hidden; background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+
+        /* SIDEBAR */
+        .sidebar { width: 250px; height: 100vh; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: fixed; z-index: 1000; }
+        .user-panel { padding: 30px 20px; text-align: center; border-bottom: 1px dashed #eee; margin-bottom: 20px; }
+        .user-avatar { font-size: 50px; color: #4e73df; margin-bottom: 10px; }
+        .user-name { font-weight: 800; font-size: 1.1rem; color: #333; }
+        .nav-link { color: #6c757d; font-weight: 600; padding: 15px 30px; display: flex; align-items: center; gap: 15px; transition: 0.3s; border-left: 5px solid transparent; }
+        .nav-link:hover { background: #f8f9fa; color: #4e73df; }
+        .nav-link.active { background: #f1f5fe; color: #4e73df; border-left: 5px solid #4e73df; }
+        .logout-link { margin-top: auto; margin-bottom: 20px; color: #e74a3b !important; }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 250px; height: 100vh; display: flex; }
+        .menu-section { flex: 7; padding: 25px; overflow-y: auto; background: #f0f2f5; }
+        .order-section { flex: 3; background: white; border-left: 1px solid #e3e6f0; display: flex; flex-direction: column; height: 100vh; }
+
+        /* TOP BAR */
+        .top-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .search-box { position: relative; width: 250px; }
+        .search-box input { width: 100%; padding: 10px 40px 10px 15px; border-radius: 20px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+
+        .icon-btn { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; border: 1px solid #eee; position: relative; }
+        .icon-btn:hover { background: #4e73df; color: white; border-color: #4e73df; }
+        .noti-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; display: none; }
+
+        /* DISH GRID */
+        .dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 10px; }
+        .dish-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #f0f0f0; }
+        .dish-card:hover { transform: translateY(-5px); border-color: #4e73df; }
+        .dish-img { height: 130px; width: 100%; object-fit: cover; }
+
+        .cat-chip { padding: 8px 20px; border-radius: 20px; background: white; border: 1px solid #ddd; cursor: pointer; white-space: nowrap; }
+        .cat-chip.active { background: #4e73df; color: white; border-color: #4e73df; }
+
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; background: #f8f9fa; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="user-panel"><i class="fas fa-user-circle user-avatar"></i><div class="user-name">{{ user }}</div></div>
+    <div class="d-flex flex-column flex-grow-1">
+        <a href="{{ url_for('main.phucvu') }}" class="nav-link"><i class="fas fa-th-large fa-lg"></i> Sơ đồ bàn</a>
+        <a href="#" class="nav-link active"><i class="fas fa-utensils fa-lg"></i> Gọi món</a>
+        <a href="{{ url_for('main.order_list') }}" class="nav-link"><i class="fas fa-clipboard-list fa-lg"></i> Danh sách đơn</a>
+        <a href="{{ url_for('main.logout') }}" class="nav-link logout-link"><i class="fas fa-sign-out-alt fa-lg"></i> Đăng xuất</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="menu-section">
+        <div class="top-bar">
+            <div class="search-box"><input type="text" id="searchInput" onkeyup="searchDish()" class="form-control rounded-pill shadow-sm" placeholder="🔍 Tìm món..."><i class="fas fa-search"></i></div>
+            <div class="icon-btn" onclick="markAsRead()">
+                <i class="far fa-bell"></i>
+                <div class="noti-badge" id="notiBadge">0</div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 overflow-auto pb-2 mb-2">
+            <div class="cat-chip active" onclick="filterCategory('all', this)">All</div>
+            {% for cat in categories %}
+                <div class="cat-chip" onclick="filterCategory('{{ cat.MaNhom }}', this)">{{ cat.TenNhom }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="dish-grid">
+            {% for mon in menu %}
+            <div class="dish-card" data-category="{{ mon.MaNhom }}" data-name="{{ mon.TenMon|lower }}">
+                <img src="{{ mon.HinhAnh if mon.HinhAnh else 'https://via.placeholder.com/200' }}" class="dish-img">
+                <div class="p-3 text-center">
+                    <div class="fw-bold text-truncate mb-1">{{ mon.TenMon }}</div>
+                    <div class="text-danger fw-bold mb-2">{{ "{:,.0f}".format(mon.GiaTien) }}</div>
+                    <div class="d-flex justify-content-center gap-3 align-items-center">
+                        <div class="qty-btn" onclick="addToCart({{ mon.MaMon }}, '{{ mon.TenMon }}', {{ mon.GiaTien }}, -1)">-</div>
+                        <span id="qty-{{ mon.MaMon }}" class="fw-bold">0</span>
+                        <div class="qty-btn" onclick="addToCart({{ mon.MaMon }}, '{{ mon.TenMon }}', {{ mon.GiaTien }}, 1)">+</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="order-section">
+        <div class="p-4 border-bottom bg-white">
+            <h5 class="mb-3 fw-bold">Chi tiết đơn hàng</h5>
+            <select id="selectedTable" class="form-select fw-bold border-2 mb-3" style="border-color: #4e73df;">
+                <option value="">-- Chọn Bàn --</option>
+                {% for ban in tables %}
+                    <option value="{{ ban.SoBan }}" {% if selected_table and selected_table|int == ban.SoBan %}selected{% endif %}>
+                        Bàn {{ ban.SoBan }} ({{ ban.SoGhe }} chỗ) - {{ ban.status_text }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="flex-grow-1 overflow-auto p-4" id="cart-items">
+            <div class="text-center text-muted mt-5">Chưa có món nào</div>
+        </div>
+
+        <div class="p-4 bg-light border-top">
+            <div class="d-flex justify-content-between fw-bold mb-3 fs-5">
+                <span>Tổng tiền:</span> <span id="cart-total" class="text-primary">0</span>
+            </div>
+            <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm" onclick="submitOrder()">
+                <i class="fas fa-paper-plane me-2"></i> GỬI BẾP
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    let cart = {};
+    const notiSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+
+    function addToCart(id, name, price, change) {
+        if (!cart[id]) cart[id] = { name, price, qty: 0, note: "" };
+        cart[id].qty += change;
+        if (cart[id].qty <= 0) {
+            delete cart[id];
+            document.getElementById(`qty-${id}`).innerText = "0";
+        } else {
+            document.getElementById(`qty-${id}`).innerText = cart[id].qty;
+        }
+        renderCart();
+    }
+
+    function updateNote(id, value) {
+        if (cart[id]) cart[id].note = value;
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cart-items');
+        container.innerHTML = "";
+        let total = 0;
+
+        if (Object.keys(cart).length === 0) {
+            container.innerHTML = '<div class="text-center text-muted mt-5">Chưa có món nào</div>';
+        }
+
+        for (const [id, item] of Object.entries(cart)) {
+            const itemTotal = item.qty * item.price;
+            total += itemTotal;
+
+            const html = `
+                <div class="mb-3 pb-3 border-bottom border-dashed">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <div class="fw-bold text-dark">${item.name}</div>
+                            <small class="text-muted">${item.price.toLocaleString()} x ${item.qty}</small>
+                        </div>
+                        <div class="fw-bold text-dark">${itemTotal.toLocaleString()}</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm bg-light border-0"
+                           placeholder="Ghi chú món này..."
+                           value="${item.note}"
+                           oninput="updateNote(${id}, this.value)">
+                </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+        document.getElementById('cart-total').innerText = total.toLocaleString();
+    }
+
+    function filterCategory(catId, el) {
+        document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.dish-card').forEach(card => {
+            card.style.display = (catId === 'all' || card.dataset.category == catId) ? 'block' : 'none';
+        });
+    }
+
+    function searchDish() {
+        const text = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.dish-card').forEach(card => {
+            card.style.display = card.dataset.name.includes(text) ? 'block' : 'none';
+        });
+    }
+
+    // --- HÀM GỬI BẾP ĐÃ SỬA LỖI ---
+    function submitOrder() {
+        const tableId = document.getElementById('selectedTable').value;
+        if (!tableId || Object.keys(cart).length === 0) return alert("Vui lòng chọn bàn và món!");
+
+        const items = Object.entries(cart).map(([id, item]) => ({
+            id,
+            quantity: item.qty,
+            price: item.price,
+            note: item.note
+        }));
+
+        fetch('/api/luu-don-hang', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ so_ban: tableId, items })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.success) {
+                alert("✅ " + data.msg);
+                window.location.href = "{{ url_for('main.phucvu') }}"; // Chuyển về sơ đồ bàn
+            } else {
+                alert("❌ Lỗi: " + data.msg);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Lỗi kết nối server!");
+        });
+    }
+
+    // --- NOTIFICATION LOGIC ---
+    let currentNotiCount = 0;
+
+    function checkNotifications() {
+        fetch('/api/get-notifications').then(r => r.json()).then(data => {
+            const count = data.length;
+            const badge = document.getElementById('notiBadge');
+
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = count;
+
+                if (count > currentNotiCount) {
+                    showToast(data[0].msg);
+                    notiSound.play().catch(e => {});
+                }
+            } else {
+                badge.style.display = 'none';
+            }
+            currentNotiCount = count;
+        });
+    }
+
+    function showToast(msg) {
+        document.getElementById('toastContainer').insertAdjacentHTML('beforeend', `<div class="toast show align-items-center text-white bg-success border-0 mb-2 shadow"><div class="d-flex"><div class="toast-body fw-bold"><i class="fas fa-check-circle me-2"></i> ${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
+        setTimeout(() => { const t = document.querySelectorAll('.toast'); if(t.length > 0) t[0].remove(); }, 5000);
+    }
+
+    function markAsRead() {
+        fetch('/api/read-notifications', { method: 'POST' }).then(r => r.json()).then(d => {
+            if(d.success) {
+                document.getElementById('notiBadge').style.display = 'none';
+                currentNotiCount = 0;
+                document.getElementById('toastContainer').innerHTML = '';
+            }
+        });
+    }
+
+    setInterval(() => { location.reload(); checkNotifications(); }, 30000);
+    setInterval(checkNotifications, 3000);
+</script>
+</body>
+</html>

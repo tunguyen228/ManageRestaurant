@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập hệ thống | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .gradient-custom-2 {
+            background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+</head>
+<body>
+<section class="h-100 gradient-form" style="background-color: #eee;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-xl-10">
+                <div class="card rounded-3 text-black shadow">
+                    <div class="row g-0">
+                        <div class="col-lg-6">
+                            <div class="card-body p-md-5 mx-md-4">
+                                <div class="text-center">
+                                    <h4 class="mt-1 mb-5 pb-1 text-primary fw-bold">PTT RESTAURANT</h4>
+                                </div>
+
+                                {% with messages = get_flashed_messages(with_categories=true) %}
+                                  {% if messages %}
+                                    {% for category, message in messages %}
+                                      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                      </div>
+                                    {% endfor %}
+                                  {% endif %}
+                                {% endwith %}
+
+                                <form action="{{ url_for('main.login') }}" method="POST">
+                                    <p class="mb-4">Vui lòng đăng nhập để bắt đầu làm việc</p>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label fw-bold">Tên đăng nhập</label>
+                                        <input type="text" name="username" class="form-control" placeholder="Ví dụ: pv1" required/>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label fw-bold">Mật khẩu</label>
+                                        <input type="password" name="password" class="form-control" placeholder="******" required/>
+                                    </div>
+
+                                    <div class="text-center pt-1 mb-5 pb-1">
+                                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3 px-5 py-2 fw-bold" type="submit">ĐĂNG NHẬP</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                            <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                                <h4 class="mb-4 fw-bold">Hệ thống quản lý chuyên nghiệp</h4>
+                                <p class="small mb-0">Hệ thống tự động nhận diện vai trò của nhân viên để cung cấp các chức năng phù hợp.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
