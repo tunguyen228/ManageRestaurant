@@ -1,59 +1,274 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Quản lý - Báo cáo doanh thu</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body class="bg-light">-->
+
+<!--<nav class="navbar navbar-dark bg-warning shadow-sm">-->
+<!--    <div class="container-fluid">-->
+<!--        <span class="navbar-brand fw-bold">📈 Dashboard Quản Lý - Xin chào {{ user }}</span>-->
+<!--        <a href="{{ url_for('main.logout') }}" class="btn btn-dark btn-sm">Đăng xuất</a>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div class="container py-5">-->
+<!--    <h2 class="text-center mb-4">Báo cáo hoạt động kinh doanh</h2>-->
+
+<!--    <div class="row g-4">-->
+<!--        <div class="col-md-4">-->
+<!--            <div class="card text-white bg-primary mb-3 h-100">-->
+<!--                <div class="card-header">Tổng doanh thu hôm nay</div>-->
+<!--                <div class="card-body">-->
+<!--                    <h3 class="card-title">15,500,000 đ</h3>-->
+<!--                    <p class="card-text">Tăng 20% so với hôm qua.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="col-md-4">-->
+<!--            <div class="card text-white bg-success mb-3 h-100">-->
+<!--                <div class="card-header">Số đơn hàng đã phục vụ</div>-->
+<!--                <div class="card-body">-->
+<!--                    <h3 class="card-title">124 Đơn</h3>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="col-md-4">-->
+<!--            <div class="card text-white bg-danger mb-3 h-100">-->
+<!--                <div class="card-header">Món bán chạy nhất</div>-->
+<!--                <div class="card-body">-->
+<!--                    <h3 class="card-title">Lẩu Thái</h3>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="card mt-4 shadow-sm">-->
+<!--        <div class="card-header fw-bold">Biểu đồ doanh thu tuần</div>-->
+<!--        <div class="card-body text-center" style="height: 300px; line-height: 300px; background: #eee;">-->
+<!--            (Khu vực hiển thị biểu đồ Chart.js sẽ được thêm sau)-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý - Báo cáo doanh thu</title>
+    <title>Quản Lý - Báo cáo Doanh thu | PTT Team</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <style>
+        .kpi-card { height: 100%; }
+    </style>
 </head>
 <body class="bg-light">
-
-<nav class="navbar navbar-dark bg-warning shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-warning shadow-sm">
     <div class="container-fluid">
-        <span class="navbar-brand fw-bold">📈 Dashboard Quản Lý - Xin chào {{ user }}</span>
-        <a href="{{ url_for('main.logout') }}" class="btn btn-dark btn-sm">Đăng xuất</a>
+        <span class="navbar-brand fw-bold text-dark"><i class="fas fa-chart-line"></i> Dashboard Quản Lý - {{ user }}</span>
+        <div class="d-flex">
+            <button onclick="window.location.href = '/logout'" class="btn btn-dark btn-sm fw-bold">Đăng xuất</button>
+        </div>
     </div>
 </nav>
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">Báo cáo hoạt động kinh doanh</h2>
+<div class="container py-4">
+    <h2 class="mb-4 text-center">Báo cáo Hoạt động Kinh doanh</h2>
 
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3 h-100">
-                <div class="card-header">Tổng doanh thu hôm nay</div>
-                <div class="card-body">
-                    <h3 class="card-title">15,500,000 đ</h3>
-                    <p class="card-text">Tăng 20% so với hôm qua.</p>
-                </div>
+    <div class="card p-3 mb-4 shadow-sm">
+        <div class="row align-items-end">
+            <div class="col-md-3">
+                <label for="start_date" class="form-label">Từ ngày</label>
+                <input type="date" id="start_date" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="end_date" class="form-label">Đến ngày</label>
+                <input type="date" id="end_date" class="form-control">
+            </div>
+            <div class="col-md-6 mt-3 mt-md-0 d-flex justify-content-end">
+                <button onclick="fetchReport()" class="btn btn-primary px-4 me-2"><i class="fas fa-filter"></i> Lọc báo cáo</button>
+                <button onclick="setTodayFilter()" class="btn btn-secondary px-4"><i class="far fa-calendar-alt"></i> Hôm nay</button>
             </div>
         </div>
+        <p class="mt-3 mb-0 text-muted">Báo cáo đang hiển thị cho khoảng thời gian: <strong id="report_period">Hôm nay</strong></p>
+    </div>
 
+    <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card text-white bg-success mb-3 h-100">
-                <div class="card-header">Số đơn hàng đã phục vụ</div>
-                <div class="card-body">
-                    <h3 class="card-title">124 Đơn</h3>
-                </div>
+            <div class="card p-3 text-white bg-primary kpi-card">
+                <h5><i class="fas fa-sack-dollar"></i> Tổng Doanh Thu</h5>
+                <h2 id="kpi_revenue">0 VNĐ</h2>
             </div>
         </div>
-
         <div class="col-md-4">
-            <div class="card text-white bg-danger mb-3 h-100">
-                <div class="card-header">Món bán chạy nhất</div>
-                <div class="card-body">
-                    <h3 class="card-title">Lẩu Thái</h3>
-                </div>
+            <div class="card p-3 text-white bg-success kpi-card">
+                <h5><i class="fas fa-file-invoice"></i> Tổng Số Hóa Đơn</h5>
+                <h2 id="kpi_invoices">0</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 text-white bg-danger kpi-card">
+                <h5><i class="fas fa-hand-holding-usd"></i> TB/Hóa Đơn</h5>
+                <h2 id="kpi_avg_revenue">0 VNĐ</h2>
             </div>
         </div>
     </div>
 
-    <div class="card mt-4 shadow-sm">
-        <div class="card-header fw-bold">Biểu đồ doanh thu tuần</div>
-        <div class="card-body text-center" style="height: 300px; line-height: 300px; background: #eee;">
-            (Khu vực hiển thị biểu đồ Chart.js sẽ được thêm sau)
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="mb-3">Tỉ lệ Doanh thu theo Nhóm Món</h5>
+                <div>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="mb-3">Top 10 Món Bán Chạy Nhất (Số lượng)</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên món</th>
+                                <th class="text-end">Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top_dishes_list">
+                            <tr><td colspan="3" class="text-center text-muted">Đang tải...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<script>
+    const API_URL = '/api/revenue-report';
+    let revenueChart = null;
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function formatDate(date) {
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function drawCategoryChart(data) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        const labels = data.map(d => d.category);
+        const revenues = data.map(d => d.revenue);
+        const backgroundColors = [
+            '#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d', '#20c997', '#fd7e14'
+        ];
+
+        if (revenueChart) {
+            revenueChart.destroy();
+        }
+
+        revenueChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: revenues,
+                    backgroundColor: backgroundColors,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+    }
+
+    function displayTopDishes(data) {
+        const tbody = $('#top_dishes_list');
+        tbody.empty();
+        if (data.length === 0) {
+             tbody.append('<tr><td colspan="3" class="text-center text-muted">Không có dữ liệu món bán chạy.</td></tr>');
+             return;
+        }
+
+        data.forEach((dish, index) => {
+            tbody.append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${dish.dish_name}</td>
+                    <td class="text-end">${dish.quantity}</td>
+                </tr>
+            `);
+        });
+    }
+
+    function setTodayFilter() {
+        const today = formatDate(new Date());
+        $('#start_date').val(today);
+        $('#end_date').val(today);
+        fetchReport();
+    }
+
+    function fetchReport() {
+        const start_date = $('#start_date').val();
+        const end_date = $('#end_date').val();
+
+        $('#kpi_revenue').text('Đang tải...');
+        $('#kpi_invoices').text('...');
+        $('#kpi_avg_revenue').text('...');
+        $('#top_dishes_list').html('<tr><td colspan="3" class="text-center text-muted">Đang tải...</td></tr>');
+
+        $.get(API_URL, { start_date: start_date, end_date: end_date }, function(response) {
+            if (response.success) {
+                const summary = response.summary;
+
+                $('#kpi_revenue').text(formatCurrency(summary.total_revenue));
+                $('#kpi_invoices').text(summary.total_invoices);
+                $('#kpi_avg_revenue').text(formatCurrency(summary.avg_revenue_per_invoice));
+                $('#report_period').text(summary.report_period);
+
+                drawCategoryChart(response.category_report);
+
+                displayTopDishes(response.top_dishes);
+
+            } else {
+                alert('Lỗi báo cáo: ' + response.msg);
+                $('#kpi_revenue').text('0 VNĐ');
+                $('#kpi_invoices').text('0');
+                $('#kpi_avg_revenue').text('0 VNĐ');
+                $('#top_dishes_list').html('<tr><td colspan="3" class="text-center text-danger">' + response.msg + '</td></tr>');
+                $('#report_period').text('Chưa có dữ liệu');
+            }
+        }).fail(function() {
+            alert('Lỗi kết nối máy chủ hoặc quyền truy cập.');
+        });
+    }
+
+    $(document).ready(function() {
+        setTodayFilter();
+    });
+</script>
 </body>
 </html>

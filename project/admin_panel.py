@@ -3,7 +3,7 @@ from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.menu import MenuLink
 # 👇 Bỏ NhanVien, BanAn, HoaDon khỏi dòng import nếu không dùng
-from models import db, MonAn, NhomMon
+from .models import db, MonAn, NhomMon
 from wtforms.validators import DataRequired, NumberRange
 
 

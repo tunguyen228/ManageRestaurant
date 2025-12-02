@@ -1,52 +1,284 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Thu ngân - Thanh toán | PTT Team</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <script>-->
+<!--        function confirmLogout() {-->
+<!--          if (confirm("Bạn có chắc chắn muốn đăng xuất không?")) {-->
+<!--            // ✅ Đã sửa link Logout thành main.logout-->
+<!--            window.location.href = "{{ url_for('main.logout') }}";-->
+<!--          }-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body class="bg-light">-->
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">-->
+<!--    <div class="container-fluid">-->
+<!--        <span class="navbar-brand fw-bold">💵 Thu ngân - PTT Team</span>-->
+<!--        <div class="d-flex">-->
+<!--            <button onclick="confirmLogout()" class="btn btn-light btn-sm fw-bold">Đăng xuất</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div class="container py-5">-->
+<!--    <h2 class="text-center text-success mb-4">💰 Xử lý thanh toán</h2>-->
+
+<!--    <div class="row justify-content-center">-->
+<!--        <div class="col-md-6">-->
+<!--            <form class="card p-4 shadow-sm">-->
+<!--                <div class="mb-3">-->
+<!--                    <label class="form-label">Chọn Bàn cần thanh toán</label>-->
+<!--                    <select class="form-select">-->
+<!--                        <option value="">&#45;&#45; Chọn bàn &#45;&#45;</option>-->
+<!--                        <option value="1">Bàn 1</option>-->
+<!--                        <option value="2">Bàn 2</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div class="mb-3">-->
+<!--                    <label class="form-label">Tổng tiền tạm tính</label>-->
+<!--                    <input type="text" class="form-control" value="0 VNĐ" readonly>-->
+<!--                </div>-->
+<!--                <div class="d-flex justify-content-center gap-3">-->
+<!--                    <button type="button" class="btn btn-success px-4">Xuất hóa đơn</button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Thu ngân - Thanh toán | PTT Team</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        function confirmLogout() {
-          if (confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
-            // ✅ Đã sửa link Logout thành main.logout
-            window.location.href = "{{ url_for('main.logout') }}";
-          }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .summary-row { font-weight: bold; border-top: 1px solid #dee2e6; }
+        .total-pay-row { background-color: #e9ecef; border-top: 2px solid #0d6efd; font-size: 1.1em; }
+    </style>
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
     <div class="container-fluid">
-        <span class="navbar-brand fw-bold">💵 Thu ngân - PTT Team</span>
+        <span class="navbar-brand fw-bold">💵 Thu ngân - PTT Team ({{ user }})</span>
         <div class="d-flex">
             <button onclick="confirmLogout()" class="btn btn-light btn-sm fw-bold">Đăng xuất</button>
         </div>
     </div>
 </nav>
 
-<div class="container py-5">
-    <h2 class="text-center text-success mb-4">💰 Xử lý thanh toán</h2>
+<div class="container py-4">
+    <h2 class="text-center text-success mb-4">💰 Xử lý Thanh toán</h2>
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form class="card p-4 shadow-sm">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="w-50 me-3">
+                        <label for="select_table" class="form-label fw-bold">Chọn Bàn cần thanh toán</label>
+                        <select id="select_table" class="form-select" onchange="fetchBill()">
+                            <option value="">-- Chọn bàn --</option>
+                            {% for ban in list_ban %}
+                                <option value="{{ ban.SoBan }}">Bàn {{ ban.SoBan }} ({{ ban.status_text }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <p class="mb-0">Order no.<strong id="bill_id">---</strong></p>
+                        <p class="mb-0">Ngày vào: <strong id="time_in">---</strong></p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên món</th>
+                                <th class="text-center">SL</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bill_items">
+                            <tr><td colspan="4" class="text-center text-muted">Vui lòng chọn bàn để xem hóa đơn</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card p-4 shadow-sm h-100">
+                <h4 class="text-success mb-3">Thông tin Thanh toán</h4>
+                <div class="mb-4">
+                    <p class="d-flex justify-content-between">Tổng số lượng món: <strong id="summary_quantity">0</strong></p>
+                    <p class="d-flex justify-content-between">Tạm tính (Subtotal): <strong id="summary_subtotal">0 VNĐ</strong></p>
+                    <p class="d-flex justify-content-between">VAT (10%): <strong id="summary_vat" class="text-primary">0 VNĐ</strong></p>
+                    <p class="d-flex justify-content-between text-danger border-bottom pb-2">Giảm giá (5% nếu >500k): <strong id="summary_discount">0 VNĐ</strong></p>
+                    <h5 class="d-flex justify-content-between text-success">TỔNG THANH TOÁN: <strong id="summary_total" data-total="0">0 VNĐ</strong></h5>
+                </div>
+
+                <hr>
+
                 <div class="mb-3">
-                    <label class="form-label">Chọn Bàn cần thanh toán</label>
-                    <select class="form-select">
-                        <option value="">-- Chọn bàn --</option>
-                        <option value="1">Bàn 1</option>
-                        <option value="2">Bàn 2</option>
-                    </select>
+                    <label for="customer_cash" class="form-label fw-bold">Số tiền khách đưa (VNĐ)</label>
+                    <input type="text" id="customer_cash" class="form-control form-control-lg" placeholder="Nhập số tiền" oninput="calculateChange()">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Tổng tiền tạm tính</label>
-                    <input type="text" class="form-control" value="0 VNĐ" readonly>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Tiền thối lại (Change)</label>
+                    <input type="text" id="change_amount" class="form-control form-control-lg bg-warning text-dark fw-bold" value="0 VNĐ" readonly>
                 </div>
-                <div class="d-flex justify-content-center gap-3">
-                    <button type="button" class="btn btn-success px-4">Xuất hóa đơn</button>
-                </div>
-            </form>
+
+                <button type="button" id="btn_checkout" class="btn btn-success btn-lg" onclick="checkout()" disabled>
+                    <i class="fas fa-check-circle"></i> Xác nhận Thanh toán
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    let currentBillData = null;
+    let currentMaHoaDon = null;
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function confirmLogout() {
+        if (confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
+            window.location.href = "{{ url_for('main.logout') }}";
+        }
+    }
+
+    function parseCurrency(value) {
+
+        return parseFloat(value.replace(/\D/g, '')) || 0;
+    }
+
+    function calculateChange() {
+        const cashInputFormatted = $('#customer_cash').val();
+        const cashInput = parseCurrency(cashInputFormatted);
+
+        const totalAmount = parseFloat($('#summary_total').data('total')) || 0;
+
+        if (cashInputFormatted) {
+            $('#customer_cash').val(cashInput.toLocaleString('vi-VN'));
+        }
+
+        let changeExact = cashInput - totalAmount;
+
+        $('#change_amount').val(formatCurrency(changeExact));
+
+        if (cashInput >= totalAmount && totalAmount > 0) {
+            $('#btn_checkout').prop('disabled', false).removeClass('btn-secondary').addClass('btn-success');
+        } else {
+            $('#btn_checkout').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
+        }
+    }
+
+    function fetchBill() {
+        const soBan = $('#select_table').val();
+
+        $('#bill_items').html('<tr><td colspan="4" class="text-center text-muted">Đang tải...</td></tr>');
+        $('#summary_total').data('total', 0).text('0 VNĐ');
+        $('#customer_cash').val('');
+        calculateChange();
+        currentBillData = null;
+
+        if (!soBan) {
+            $('#bill_items').html('<tr><td colspan="4" class="text-center text-muted">Vui lòng chọn bàn để xem hóa đơn</td></tr>');
+            return;
+        }
+
+        $.get(`/api/get-bill/${soBan}`, function(response) {
+            if (response.success) {
+                currentBillData = response;
+                currentMaHoaDon = response.ma_hoa_don;
+
+                $('#bill_id').text(response.ma_hoa_don);
+                $('#time_in').text(response.thoi_gian_vao);
+
+                let itemsHtml = '';
+                response.items.forEach(item => {
+                    itemsHtml += `
+                        <tr>
+                            <td>${item.ten_mon} <small class="text-muted">${item.ghi_chu ? '(' + item.ghi_chu + ')' : ''}</small></td>
+                            <td class="text-center">${item.so_luong}</td>
+                            <td class="text-end">${formatCurrency(item.don_gia)}</td>
+                            <td class="text-end">${formatCurrency(item.thanh_tien)}</td>
+                        </tr>
+                    `;
+                });
+                $('#bill_items').html(itemsHtml);
+
+                const calcs = response.calculations;
+                $('#summary_quantity').text(calcs.tong_so_luong);
+                $('#summary_subtotal').text(formatCurrency(calcs.tam_tinh));
+                $('#summary_vat').text(formatCurrency(calcs.vat));
+                $('#summary_discount').text(formatCurrency(calcs.giam_gia));
+
+                $('#summary_total').text(formatCurrency(calcs.tong_thanh_toan)).data('total', calcs.tong_thanh_toan);
+
+                const suggestedCash = Math.ceil(calcs.tong_thanh_toan / 1000) * 1000;
+                $('#customer_cash').val(suggestedCash);
+
+                calculateChange();
+
+            } else {
+                alert('Lỗi: ' + response.msg);
+                $('#bill_items').html('<tr><td colspan="4" class="text-center text-danger">Không có hóa đơn chưa thanh toán!</td></tr>');
+            }
+        });
+    }
+
+    function checkout() {
+        if (!currentMaHoaDon || currentBillData.calculations.tong_thanh_toan <= 0) {
+            alert('Vui lòng chọn bàn có hóa đơn hợp lệ để thanh toán.');
+            return;
+        }
+
+        if (!confirm(`Xác nhận thanh toán HĐ #${currentMaHoaDon} cho Bàn ${currentBillData.so_ban}?`)) {
+            return;
+        }
+
+        $('#btn_checkout').prop('disabled', true).text('Đang xử lý...');
+
+        const postData = {
+            ma_hoa_don: currentMaHoaDon,
+            tong_thanh_toan: currentBillData.calculations.tong_thanh_toan,
+            tien_khach_dua: parseFloat($('#customer_cash').val()) || 0,
+            giam_gia: currentBillData.calculations.giam_gia
+        };
+
+        $.ajax({
+            url: '/api/checkout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(postData),
+            success: function(response) {
+                if (response.success) {
+                    alert(`✅ Thanh toán thành công! Bàn ${currentBillData.so_ban} đã trống.`);
+                    window.location.reload();
+                } else {
+                    alert('Lỗi thanh toán: ' + response.msg);
+                    $('#btn_checkout').prop('disabled', false).text('Xác nhận Thanh toán');
+                }
+            },
+            error: function() {
+                alert('Lỗi kết nối máy chủ.');
+                $('#btn_checkout').prop('disabled', false).text('Xác nhận Thanh toán');
+            }
+        });
+    }
+</script>
 </body>
 </html>

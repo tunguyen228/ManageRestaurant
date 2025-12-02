@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models import db, NhanVien, MonAn, BanAn, NhomMon, HoaDon, ChiTietHoaDon
+from .models import db, NhanVien, MonAn, BanAn, NhomMon, HoaDon, ChiTietHoaDon
 from sqlalchemy import desc, asc, func
 from datetime import datetime
 
@@ -111,6 +111,19 @@ def bep():
 
 # --- VIEWS KHÁC ---
 @view_bp.route('/thungan')
-def thungan(): return render_template('thungan.html', user=session['fullname'])
+def thungan():
+    if session.get('role') in ['ThuNgan', 'Admin', 'QuanLy']:
+        ds_ban_co_hoa_don = BanAn.query.filter(BanAn.TrangThai.in_(['CoKhach', 'DatTruoc'])).all()
+        ds_hoa_don_cho = HoaDon.query.filter_by(TrangThai='ChuaThanhToan').all()
+
+        return render_template('thungan.html',
+                               user=session['fullname'],
+                               list_ban=ds_ban_co_hoa_don,
+                               list_hoa_don=ds_hoa_don_cho)
+    return redirect(url_for('main.index'))
+
 @view_bp.route('/quanly')
-def quanly(): return render_template('quanly.html', user=session['fullname'])
+def quanly():
+    if session.get('role') in ['QuanLy', 'Admin']:
+        return render_template('quanly.html', user=session['fullname'])
+    return redirect(url_for('main.index'))
