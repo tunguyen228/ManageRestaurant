@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from .models import db, HoaDon, BanAn, ChiTietHoaDon, ThongBao, NhomMon, MonAn
+from models import db, HoaDon, BanAn, ChiTietHoaDon, ThongBao, NhomMon, MonAn
 from sqlalchemy import func
 from datetime import datetime, timedelta
 

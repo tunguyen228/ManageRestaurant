@@ -1,0 +1,14 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block body %}
+    <h3 class="text-uppercase">
+        {% if 'edit' in request.path %}
+            <i class="fas fa-edit text-warning"></i> Chỉnh sửa thông tin
+        {% else %}
+            <i class="fas fa-plus-circle text-success"></i> Thêm dữ liệu mới
+        {% endif %}
+    </h3>
+    <hr>
+
+    {{ super() }}
+{% endblock %}

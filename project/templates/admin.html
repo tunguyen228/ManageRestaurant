@@ -1,0 +1,100 @@
+{% extends 'admin/master.html' %}
+
+{% block body_dashboard %}
+<style>
+    /* Grid Layout */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+        padding-top: 50px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Thẻ bài (Glassmorphism) */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 40px;
+        text-align: center;
+
+        /* --- FIX QUAN TRỌNG: BỎ GẠCH CHÂN --- */
+        text-decoration: none !important;
+        color: #333;
+
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        height: 260px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Hiệu ứng Hover: Nổi lên + Đổi màu viền + Vẫn KHÔNG gạch chân */
+    .glass-card:hover {
+        transform: translateY(-10px);
+        background: white;
+        border-color: #d35400;
+        box-shadow: 0 20px 40px rgba(211, 84, 0, 0.15);
+        text-decoration: none !important; /* Đảm bảo không gạch chân khi hover */
+    }
+
+    /* Icon mặc định (Màu cam) */
+    .card-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        background: -webkit-linear-gradient(#d35400, #f39c12);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: transform 0.3s;
+    }
+
+    /* Icon màu xanh cho Nhóm món */
+    .icon-blue {
+        background: -webkit-linear-gradient(#2980b9, #3498db) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+
+    .glass-card:hover .card-icon { transform: scale(1.1) rotate(5deg); }
+
+    /* Tiêu đề (Đã chỉnh cùng 1 màu) */
+    .card-title {
+        font-weight: 800;
+        font-size: 1.8rem;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        color: #2c3e50 !important; /* Màu xanh đen đồng nhất cho cả 2 thẻ */
+    }
+
+    .card-desc {
+        color: #7f8c8d; font-weight: 600; font-size: 1.1rem;
+    }
+
+    /* Khi hover vào thẻ, đổi màu text mô tả nhẹ nhàng */
+    .glass-card:hover .card-desc { color: #555; }
+</style>
+
+<div class="text-center mt-4 mb-5">
+    <h1 class="fw-bold text-white" style="text-shadow: 0 3px 10px rgba(0,0,0,0.5);">HỆ THỐNG QUẢN TRỊ</h1>
+    <p class="text-white fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Xin chào, {{ user }}</p>
+</div>
+
+<div class="row justify-content-center g-4">
+    <div class="col-md-5">
+        <a href="{{ url_for('monan.index_view') }}" class="glass-card">
+            <i class="fas fa-utensils card-icon"></i>
+            <div class="card-title">Thực Đơn</div>
+            <div class="card-desc">Quản lý món ăn</div>
+        </a>
+    </div>
+    <div class="col-md-5">
+        <a href="{{ url_for('nhommon.index_view') }}" class="glass-card">
+            <i class="fas fa-layer-group card-icon icon-blue"></i>
+            <div class="card-title">Nhóm Món</div>
+            <div class="card-desc">Quản lý danh mục</div>
+        </a>
+    </div>
+</div>
+{% endblock %}

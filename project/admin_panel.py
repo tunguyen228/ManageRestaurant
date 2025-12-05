@@ -1,42 +1,39 @@
 from flask import redirect, url_for, session, flash
-from flask_admin import Admin, AdminIndexView
+from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.menu import MenuLink
-# 👇 Bỏ NhanVien, BanAn, HoaDon khỏi dòng import nếu không dùng
-from .models import db, MonAn, NhomMon
+from models import db, MonAn, NhomMon
 from wtforms.validators import DataRequired, NumberRange
 
 
-# 1. Lớp Bảo vệ: Chỉ cho phép vai trò 'Admin' truy cập
+# 1. Bảo vệ quyền Admin
 class SecureModelView(ModelView):
     def is_accessible(self):
         return 'loggedin' in session and session.get('role') == 'Admin'
 
     def inaccessible_callback(self, name, **kwargs):
-        flash('Bạn không có quyền truy cập trang Quản trị!', 'danger')
         return redirect(url_for('main.index'))
 
 
-# 2. Tùy chỉnh giao diện Quản lý Món ăn
-class DishModelView(SecureModelView):
-    # Danh sách cột hiển thị (Đã bỏ DonVi)
+# 2. Ẩn khỏi menu mặc định (Để dùng Dashboard thẻ bài)
+class HiddenModelView(SecureModelView):
+    def is_visible(self):
+        return False
+
+
+# 3. View Quản lý Món ăn
+class DishModelView(HiddenModelView):
+    # Sử dụng template form tùy chỉnh để giao diện đẹp hơn
+    create_template = 'admin/custom_form.html'
+    edit_template = 'admin/custom_form.html'
+
     column_list = ('MaCode', 'TenMon', 'GiaTien', 'nhom', 'DangKinhDoanh')
-
     column_searchable_list = ['MaCode', 'TenMon']
-
     column_filters = ['nhom', 'GiaTien', 'DangKinhDoanh']
-
-    # Form nhập liệu (Đã bỏ DonVi)
     form_columns = ('MaCode', 'TenMon', 'nhom', 'GiaTien', 'HinhAnh', 'DangKinhDoanh')
 
-    # Tên hiển thị tiếng Việt (Đã xóa dòng 'DonVi': 'Đơn Vị')
     column_labels = {
-        'MaCode': 'Mã Món',
-        'TenMon': 'Tên Món',
-        'GiaTien': 'Giá Bán',
-        'nhom': 'Nhóm Món',
-        'DangKinhDoanh': 'Đang Bán',
-        'HinhAnh': 'Link Ảnh'
+        'MaCode': 'Mã', 'TenMon': 'Tên Món', 'GiaTien': 'Giá',
+        'nhom': 'Nhóm', 'DangKinhDoanh': 'Bán', 'HinhAnh': 'Ảnh'
     }
 
     form_args = {
@@ -45,7 +42,14 @@ class DishModelView(SecureModelView):
     }
 
 
-# 3. Class cho trang chủ Admin
+# 4. View Quản lý Nhóm
+class CategoryModelView(HiddenModelView):
+    column_list = ('MaNhom', 'TenNhom')
+    form_columns = ('TenNhom',)
+    column_labels = {'MaNhom': 'ID', 'TenNhom': 'Tên Nhóm'}
+
+
+# 5. Dashboard Index
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         return 'loggedin' in session and session.get('role') == 'Admin'
@@ -53,14 +57,20 @@ class MyAdminIndexView(AdminIndexView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('main.index'))
 
+    @expose('/')
+    def index(self):
+        return self.render('admin.html',
+                           user=session.get('fullname'),
+                           avatar_url=session.get('avatar'))
 
-# 4. Hàm khởi tạo
+
+# 6. Hàm khởi tạo
 def init_admin(app, db):
-    admin = Admin(app, name='PTT Quản Trị', index_view=MyAdminIndexView())
+    admin = Admin(app, name='PTT Admin',
+                  index_view=MyAdminIndexView(template='admin.html'))
 
-    # CHỈ CÒN LẠI THỰC ĐƠN VÀ NHÓM MÓN
-    admin.add_view(DishModelView(MonAn, db.session, name="Thực Đơn"))
-    admin.add_view(SecureModelView(NhomMon, db.session, name="Nhóm Món"))
+    # Gán template master tại đây
+    admin.base_template = 'admin/master.html'
 
-    # Nút đăng xuất
-    admin.add_link(MenuLink(name='Đăng xuất', category='', url='/logout'))
+    admin.add_view(DishModelView(MonAn, db.session, name="Thực Đơn", endpoint='monan'))
+    admin.add_view(CategoryModelView(NhomMon, db.session, name="Nhóm Món", endpoint='nhommon'))

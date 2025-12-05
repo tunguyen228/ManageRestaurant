@@ -5,67 +5,146 @@
     <title>Danh sách Order | PTT Team</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet">
+
     <style>
-        body { height: 100vh; overflow: hidden; background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        /* --- CẤU HÌNH CHUNG --- */
+        body {
+            font-family: "Baloo 2", sans-serif;
+            margin: 0; padding: 0; height: 100vh; overflow: hidden;
+            color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
 
-        /* SIDEBAR (Giữ nguyên) */
-        .sidebar { width: 250px; height: 100vh; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: fixed; z-index: 1000; }
-        .user-panel { padding: 30px 20px; text-align: center; border-bottom: 1px dashed #eee; margin-bottom: 20px; }
-        .user-avatar { font-size: 50px; color: #4e73df; margin-bottom: 10px; }
-        .user-name { font-weight: 800; font-size: 1.1rem; color: #333; }
-        .nav-link { color: #6c757d; font-weight: 600; padding: 15px 30px; display: flex; align-items: center; gap: 15px; transition: 0.3s; border-left: 5px solid transparent; }
-        .nav-link:hover { background: #f8f9fa; color: #4e73df; }
-        .nav-link.active { background: #f1f5fe; color: #4e73df; border-left-color: #4e73df; }
-        .logout-link { margin-top: auto; margin-bottom: 20px; color: #e74a3b !important; }
+        /* --- BACKGROUND --- */
+        .bg-image-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+                        url('https://res.cloudinary.com/dschg4bcn/image/upload/v1764869749/BeautyPlus-IMAGE-UPSCALER-1764869704815_plfqzl.jpg');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
 
-        /* CONTENT */
-        .main-content { margin-left: 250px; padding: 30px; height: 100vh; overflow-y: auto; }
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px; height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-direction: column; position: fixed; z-index: 1000;
+        }
+        .user-panel { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px; }
+        .user-name { font-weight: 800; font-size: 1.2rem; color: #fff; margin-top: 15px; letter-spacing: 1px; }
+        .user-avatar-icon { font-size: 60px; color: #fff; opacity: 0.9; margin-bottom: 10px; }
+        .user-avatar-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); transition: transform 0.3s; }
+        .user-avatar-img:hover { transform: scale(1.1); }
+        .nav-link { color: rgba(255, 255, 255, 0.8); font-weight: 600; padding: 15px 30px; display: flex; align-items: center; gap: 15px; transition: all 0.3s; border-left: 4px solid transparent; font-size: 1.1rem; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; padding-left: 35px; }
+        .nav-link.active { background: rgba(255, 255, 255, 0.15); color: #fff; border-left-color: #4e73df; box-shadow: inset 0 0 15px rgba(78, 115, 223, 0.2); text-shadow: 0 0 10px rgba(78, 115, 223, 0.8); }
+        .logout-link { margin-top: auto; margin-bottom: 20px; color: #ff6b6b !important; }
+        .logout-link:hover { background: rgba(220, 53, 69, 0.2) !important; color: #ff8787 !important; }
 
-        /* --- TOP BAR (ĐÃ CHỈNH SỬA) --- */
-        /* justify-content-between: Để tiêu đề bên trái, cụm search bên phải */
+        /* --- CONTENT --- */
+        .main-content { margin-left: 260px; padding: 30px; height: 100vh; overflow-y: auto; }
+
+        /* TOP BAR */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-
         .search-group { display: flex; align-items: center; gap: 15px; }
         .search-box { position: relative; width: 250px; }
-        .search-box input { width: 100%; padding: 10px 40px 10px 15px; border-radius: 20px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-box input { width: 100%; padding: 10px 40px 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; backdrop-filter: blur(5px); }
+        .search-box input:focus { outline: none; border-color: #4e73df; background: rgba(0,0,0,0.5); }
+        .search-box input::placeholder { color: #aaa; }
         .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+        .icon-btn { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: 0.2s; position: relative; }
+        .icon-btn:hover { background: #dc3545; color: white; border-color: #4e73df; }
 
-        .icon-btn { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #555; border: 1px solid #ddd; cursor: pointer; transition: 0.2s; position: relative; }
-        .icon-btn:hover { background: #4e73df; color: white; border-color: #4e73df; }
-
-        /* CARD & GRID (Giữ nguyên) */
+        /* --- CARD & GRID --- */
         .order-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        .order-card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.2s; display: flex; flex-direction: column; height: 350px; }
-        .order-card:hover { transform: translateY(-5px); border-color: #4e73df; }
-        .card-header-custom { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 15px; border-bottom: 2px dashed #999; margin-bottom: 10px; flex-shrink: 0; }
-        .order-no { font-weight: 800; font-size: 1.1rem; color: #333; }
-        .table-badge { background: #4e73df; color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
-        .wait-time { font-size: 0.85rem; color: #dc3545; font-weight: 600; margin-top: 5px; display: block; }
-        .done-status { font-size: 0.9rem; color: #198754; font-weight: 700; margin-top: 5px; display: block; text-transform: uppercase; }
+
+        .order-card {
+            background: rgba(30, 30, 30, 0.75);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s;
+            display: flex; flex-direction: column;
+            height: 350px;
+            color: #fff;
+        }
+        .order-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        .card-header-custom {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);
+            margin-bottom: 10px; flex-shrink: 0;
+        }
+        .order-no { font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
+
+        /* -- STYLE MỚI CHO SỐ BÀN: GLASS CAPSULE -- */
+        .table-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            text-shadow: none;
+        }
+
+        .wait-time { font-size: 0.85rem; color: #ff6b6b; font-weight: 600; margin-top: 5px; display: block; }
+        .done-status { font-size: 0.9rem; color: #2ecc71; font-weight: 700; margin-top: 5px; display: block; text-transform: uppercase; text-shadow: 0 0 5px rgba(46, 204, 113, 0.4); }
+
         .order-items { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 10px; max-height: 160px; }
         .order-items::-webkit-scrollbar { width: 5px; }
-        .order-items::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .order-items::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
-        .item-name { font-weight: 600; color: #444; width: 55%; }
-        .item-qty { font-weight: bold; color: #333; background: #f0f2f5; padding: 2px 8px; border-radius: 6px; font-size: 0.9rem; }
+        .order-items::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .order-items::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .item-name { font-weight: 600; color: #eee; width: 55%; }
+        .item-qty { font-weight: bold; color: #fff; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 6px; font-size: 0.9rem; }
+
         .item-status { font-size: 0.75rem; font-style: italic; text-transform: uppercase; font-weight: 700; }
-        .st-waiting { color: #ffc107; }
-        .st-cooking { color: #0d6efd; }
-        .st-done { color: #198754; }
-        .st-served { color: #999; font-style: italic; text-decoration: line-through; }
-        .item-row.served { opacity: 0.6; background: #f9f9f9; }
-        .serve-check { transform: scale(1.3); cursor: pointer; }
-        .card-footer-custom { padding-top: 15px; border-top: 2px solid #ccc; text-align: right; flex-shrink: 0; margin-top: auto; }
-        .total-price { font-weight: 800; font-size: 1.2rem; color: #4e73df; }
+        .st-waiting { color: #f1c40f; }
+        .st-cooking { color: #3498db; }
+        .st-done { color: #2ecc71; }
+        .st-served { color: #7f8c8d; font-style: italic; text-decoration: line-through; }
+        .item-row.served { opacity: 0.5; }
+        .serve-check { transform: scale(1.3); cursor: pointer; filter: hue-rotate(180deg); }
+
+        .card-footer-custom {
+            padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: right; flex-shrink: 0; margin-top: auto;
+        }
+
+        /* -- STYLE MỚI CHO TỔNG TIỀN: GOLD GLOW -- */
+        .total-price {
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: #f1c40f; /* Màu vàng kim */
+            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+            letter-spacing: 0.5px;
+        }
+
         .noti-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; display: none; }
         .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
     </style>
 </head>
 <body>
 
+<div class="bg-image-container"></div>
+
 <div class="sidebar">
-    <div class="user-panel"><i class="fas fa-user-circle user-avatar"></i><div class="user-name">{{ user }}</div></div>
+    <div class="user-panel">
+        {% if avatar_url %}
+            <img src="{{ avatar_url }}" alt="Avatar" class="user-avatar-img">
+        {% else %}
+            <i class="fas fa-user-circle user-avatar-icon"></i>
+        {% endif %}
+        <div class="user-name">{{ user }}</div>
+    </div>
+
     <div class="d-flex flex-column flex-grow-1">
         <a href="{{ url_for('main.phucvu') }}" class="nav-link"><i class="fas fa-th-large fa-lg"></i> Sơ đồ bàn</a>
         <a href="{{ url_for('main.menu') }}" class="nav-link"><i class="fas fa-utensils fa-lg"></i> Gọi món</a>
@@ -77,7 +156,7 @@
 <div class="main-content">
 
     <div class="top-bar">
-        <h2 class="fw-bold text-dark m-0">Quản lý Order</h2>
+        <h2 class="fw-bold m-0" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Quản lý Order</h2>
 
         <div class="search-group">
             <div class="search-box">
@@ -105,7 +184,7 @@
                         <span class="wait-time"><i class="far fa-clock"></i> Waited: {{ order.waited_min }} min</span>
                     {% endif %}
                 </div>
-                <div class="table-badge">Bàn số {{ order.SoBan }}</div>
+                <div class="table-badge">Bàn {{ order.SoBan }}</div>
             </div>
 
             <div class="order-items">
@@ -140,12 +219,15 @@
             </div>
 
             <div class="card-footer-custom">
-                <span class="text-muted small me-2">Tạm tính:</span>
+                <span class="small me-2" style="color: #aaa;">Tạm tính:</span>
                 <span class="total-price">{{ "{:,.0f}".format(order.TongThanhToan) }} đ</span>
             </div>
         </div>
         {% else %}
-            <div class="text-center w-100 text-muted pt-5"><i class="fas fa-mug-hot fa-3x mb-3"></i><p>Hiện chưa có đơn hàng nào.</p></div>
+            <div class="text-center w-100 pt-5" style="color: rgba(255,255,255,0.5);">
+                <i class="fas fa-mug-hot fa-3x mb-3"></i>
+                <p>Hiện chưa có đơn hàng nào.</p>
+            </div>
         {% endfor %}
     </div>
 </div>
@@ -154,7 +236,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // 1. HÀM TICK PHỤC VỤ
+    // Logic JS giữ nguyên
     function serveDish(checkbox, id, dishName, tableNum) {
         if(checkbox.checked) {
             fetch('/api/update-status', {
@@ -168,12 +250,9 @@
                     showToast(`Đã phục vụ: ${dishName} (Bàn ${tableNum})`);
                     checkbox.disabled = true;
                     checkbox.closest('.item-row').classList.add('served');
-
-                    // Đổi text trạng thái ngay lập tức
                     const statusText = checkbox.closest('.item-row').querySelector('small.fw-bold');
                     statusText.className = 'fw-bold st-served';
                     statusText.innerText = 'Đã phục vụ';
-
                     new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play().catch(()=>{});
                 } else {
                     alert("Lỗi cập nhật!");
@@ -183,7 +262,6 @@
         }
     }
 
-    // 2. TÌM KIẾM
     function searchOrder() {
         const text = document.getElementById('searchInput').value.toLowerCase();
         document.querySelectorAll('.order-card').forEach(card => {
@@ -193,7 +271,6 @@
         });
     }
 
-    // 3. THÔNG BÁO
     let currentNotiCount = 0;
     const notiSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
 

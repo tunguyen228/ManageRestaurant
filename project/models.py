@@ -3,6 +3,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 # 1. NHÂN VIÊN
 class NhanVien(db.Model):
     __tablename__ = 'NhanVien'
@@ -11,6 +12,8 @@ class NhanVien(db.Model):
     MatKhau = db.Column(db.String(255))
     HoTen = db.Column(db.String(100))
     VaiTro = db.Column(db.String(20))
+    Avatar = db.Column(db.Text)
+
 
 # 2. DANH MỤC & MÓN ĂN
 class NhomMon(db.Model):
@@ -19,10 +22,15 @@ class NhomMon(db.Model):
     TenNhom = db.Column(db.String(50))
     mon_ans = db.relationship('MonAn', backref='nhom', lazy=True)
 
+    # 👇 QUAN TRỌNG: Giúp hiển thị Tên Nhóm trong Admin thay vì Object ID
+    def __str__(self):
+        return self.TenNhom
+
+
 class MonAn(db.Model):
     __tablename__ = 'MonAn'
     MaMon = db.Column(db.Integer, primary_key=True)
-    MaCode = db.Column(db.String(20), unique=True)
+    MaCode = db.Column(db.String(20), unique=True)  # Mã món (VD: COM01)
     TenMon = db.Column(db.String(100))
     DonVi = db.Column(db.String(50))
     GiaTien = db.Column(db.Numeric(10, 0))
@@ -30,7 +38,8 @@ class MonAn(db.Model):
     DangKinhDoanh = db.Column(db.Boolean, default=True)
     MaNhom = db.Column(db.Integer, db.ForeignKey('NhomMon.MaNhom'))
 
-# 3. BÀN ĂN
+
+# 3. BÀN ĂN (TÍCH HỢP LOGIC HIỂN THỊ)
 class BanAn(db.Model):
     __tablename__ = 'BanAn'
     SoBan = db.Column(db.Integer, primary_key=True)
@@ -38,7 +47,7 @@ class BanAn(db.Model):
     Tang = db.Column(db.Integer, default=1)
     SoGhe = db.Column(db.Integer, default=4)
 
-    # Logic hiển thị cho HTML
+    # --- Logic hiển thị cho HTML (Sơ đồ bàn) ---
     @property
     def css_class(self):
         if self.TrangThai == 'CoKhach': return 'bg-cokhach'
@@ -57,7 +66,8 @@ class BanAn(db.Model):
         if self.TrangThai == 'DatTruoc': return 'fa-clock'
         return 'fa-chair'
 
-# 4. HÓA ĐƠN
+
+# 4. HÓA ĐƠN (TÍCH HỢP LOGIC TÍNH TOÁN)
 class HoaDon(db.Model):
     __tablename__ = 'HoaDon'
     MaHoaDon = db.Column(db.Integer, primary_key=True)
@@ -69,11 +79,17 @@ class HoaDon(db.Model):
     TrangThai = db.Column(db.String(20), default='ChuaThanhToan')
     GhiChu = db.Column(db.String(255))
 
+    # Thêm các cột tính toán nếu cần (như TongTienHang, VAT...)
+    TongTienHang = db.Column(db.Numeric(10, 0), default=0)
+    GiamGia = db.Column(db.Numeric(10, 0), default=0)
+    VAT = db.Column(db.Numeric(10, 0), default=0)
+
     chi_tiet = db.relationship('ChiTietHoaDon', backref='hoa_don', lazy=True)
 
-    # Logic kiểm tra hoàn thành đơn
+    # --- Logic tính toán ---
     @property
     def is_completed(self):
+        """Kiểm tra xem tất cả món trong đơn đã xong chưa"""
         for item in self.chi_tiet:
             if item.TrangThaiMon in ['ChoCheBien', 'DangCheBien']:
                 return False
@@ -81,10 +97,12 @@ class HoaDon(db.Model):
 
     @property
     def waited_min(self):
+        """Tính số phút khách đã chờ"""
         delta = datetime.now() - self.ThoiGianVao
         return int(delta.total_seconds() / 60)
 
-# 5. CHI TIẾT HÓA ĐƠN
+
+# 5. CHI TIẾT HÓA ĐƠN (TÍCH HỢP LOGIC MÀU SẮC MÓN)
 class ChiTietHoaDon(db.Model):
     __tablename__ = 'ChiTietHoaDon'
     MaChiTiet = db.Column(db.Integer, primary_key=True)
@@ -93,12 +111,13 @@ class ChiTietHoaDon(db.Model):
     SoLuong = db.Column(db.Integer, default=1)
     DonGia = db.Column(db.Numeric(10, 0))
     GhiChu = db.Column(db.String(255))
-    TrangThaiMon = db.Column(db.String(20), default='ChoCheBien')
+    # Dùng String(50) để tránh lỗi Enum nếu DB thay đổi
+    TrangThaiMon = db.Column(db.String(50), default='ChoCheBien')
     ThoiGianGoi = db.Column(db.DateTime, default=datetime.now)
 
     mon_an = db.relationship('MonAn', backref='chi_tiet', lazy=True)
 
-    # Logic CSS màu sắc trạng thái món
+    # --- Logic class CSS cho trạng thái món ---
     @property
     def status_css(self):
         if self.TrangThaiMon == 'ChoCheBien': return 'st-waiting'
@@ -106,6 +125,7 @@ class ChiTietHoaDon(db.Model):
         if self.TrangThaiMon == 'HoanTat': return 'st-done'
         if self.TrangThaiMon == 'Served': return 'st-served'
         return ''
+
 
 # 6. THÔNG BÁO
 class ThongBao(db.Model):
