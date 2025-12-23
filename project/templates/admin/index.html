@@ -1,0 +1,41 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron text-center" style="background: #fff; margin-top: 20px; border-top: 5px solid #5A7863; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+
+                {% if user %}
+                    <h2><strong style="color: #5A7863;">{{ user }}</strong></h2>
+                    <p class="lead">Chào mừng quay trở lại trang quản trị</p>
+                {% endif %}
+
+                <hr>
+
+                <div class="row" style="margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+
+                    <div class="col-md-3">
+                        <a href="{{ url_for('monan.index_view') }}" class="btn btn-lg btn-block" style="background-color: #5A7863; color: white; padding: 40px 0; font-size: 22px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%;">
+                            <i class="fa fa-utensils"></i><br>Quản lý Thực Đơn
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="{{ url_for('nhommon.index_view') }}" class="btn btn-lg btn-block" style="background-color: #89986D; color: white; padding: 40px 0; font-size: 22px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%;">
+                            <i class="fa fa-list"></i><br>Quản lý Nhóm Món
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="{{ url_for('nhanvien.index_view') }}" class="btn btn-lg btn-block" style="background-color: #5A7863; color: white; padding: 40px 0; font-size: 22px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%;">
+                            <i class="fa fa-users"></i><br>Quản lý Nhân Viên
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

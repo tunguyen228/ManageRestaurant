@@ -1,0 +1,119 @@
+body {
+    background: #94B4C1;
+    color: #547792;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.kitchen-header {
+    padding: 15px;
+    background: #547792;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    border-bottom: 3px solid #9CAB84;
+}
+
+.kitchen-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 85px);
+}
+
+.col-waiting,
+.col-cooking {
+    flex: 1;
+    border-radius: 12px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.col-waiting {
+    background: #EFE9E3;
+    border: 3px solid #547792;
+}
+
+.col-cooking {
+    background: #9CAB84;
+    border: 3px solid #ffffff;
+}
+
+.task-card {
+    background: #FFCDC9;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 6px solid #547792;
+    box-shadow: none;
+}
+
+.dish-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+    color: #547792;
+}
+
+.dish-qty {
+    float: right;
+    color: #9CAB84;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.btn-action {
+    width: 100%;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.btn-cook {
+    background: #547792;
+}
+
+.btn-done {
+    background: #9CAB84;
+    border: 1px solid #fff;
+}
+
+.nav-tab-item {
+    color: #94B4C1;
+    text-decoration: none;
+    padding: 6px 15px;
+    border: 1px solid #94B4C1;
+    border-radius: 20px;
+    margin-left: 5px;
+}
+
+.nav-tab-item.active {
+    background: #94B4C1;
+    color: #547792;
+    font-weight: bold;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #9CAB84;
+}
+
+.logout-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #547792;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #9CAB84;
+}

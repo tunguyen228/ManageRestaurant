@@ -5,162 +5,20 @@
     <title>Danh sách Order | PTT Team</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet">
-
-    <style>
-        /* --- CẤU HÌNH CHUNG --- */
-        body {
-            font-family: "Baloo 2", sans-serif;
-            margin: 0; padding: 0; height: 100vh; overflow: hidden;
-            color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-        }
-
-        /* --- BACKGROUND --- */
-        .bg-image-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
-                        url('https://res.cloudinary.com/dschg4bcn/image/upload/v1764869749/BeautyPlus-IMAGE-UPSCALER-1764869704815_plfqzl.jpg');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 260px; height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex; flex-direction: column; position: fixed; z-index: 1000;
-        }
-        .user-panel { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px; }
-        .user-name { font-weight: 800; font-size: 1.2rem; color: #fff; margin-top: 15px; letter-spacing: 1px; }
-        .user-avatar-icon { font-size: 60px; color: #fff; opacity: 0.9; margin-bottom: 10px; }
-        .user-avatar-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); transition: transform 0.3s; }
-        .user-avatar-img:hover { transform: scale(1.1); }
-        .nav-link { color: rgba(255, 255, 255, 0.8); font-weight: 600; padding: 15px 30px; display: flex; align-items: center; gap: 15px; transition: all 0.3s; border-left: 4px solid transparent; font-size: 1.1rem; }
-        .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; padding-left: 35px; }
-        .nav-link.active { background: rgba(255, 255, 255, 0.15); color: #fff; border-left-color: #4e73df; box-shadow: inset 0 0 15px rgba(78, 115, 223, 0.2); text-shadow: 0 0 10px rgba(78, 115, 223, 0.8); }
-        .logout-link { margin-top: auto; margin-bottom: 20px; color: #ff6b6b !important; }
-        .logout-link:hover { background: rgba(220, 53, 69, 0.2) !important; color: #ff8787 !important; }
-
-        /* --- CONTENT --- */
-        .main-content { margin-left: 260px; padding: 30px; height: 100vh; overflow-y: auto; }
-
-        /* TOP BAR */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .search-group { display: flex; align-items: center; gap: 15px; }
-        .search-box { position: relative; width: 250px; }
-        .search-box input { width: 100%; padding: 10px 40px 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; backdrop-filter: blur(5px); }
-        .search-box input:focus { outline: none; border-color: #4e73df; background: rgba(0,0,0,0.5); }
-        .search-box input::placeholder { color: #aaa; }
-        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
-        .icon-btn { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: 0.2s; position: relative; }
-        .icon-btn:hover { background: #dc3545; color: white; border-color: #4e73df; }
-
-        /* --- CARD & GRID --- */
-        .order-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-
-        .order-card {
-            background: rgba(30, 30, 30, 0.75);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s;
-            display: flex; flex-direction: column;
-            height: 350px;
-            color: #fff;
-        }
-        .order-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        .card-header-custom {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);
-            margin-bottom: 10px; flex-shrink: 0;
-        }
-        .order-no { font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
-
-        /* -- STYLE MỚI CHO SỐ BÀN: GLASS CAPSULE -- */
-        .table-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-            text-shadow: none;
-        }
-
-        .wait-time { font-size: 0.85rem; color: #ff6b6b; font-weight: 600; margin-top: 5px; display: block; }
-        .done-status { font-size: 0.9rem; color: #2ecc71; font-weight: 700; margin-top: 5px; display: block; text-transform: uppercase; text-shadow: 0 0 5px rgba(46, 204, 113, 0.4); }
-
-        .order-items { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 10px; max-height: 160px; }
-        .order-items::-webkit-scrollbar { width: 5px; }
-        .order-items::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-        .order-items::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-
-        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
-        .item-name { font-weight: 600; color: #eee; width: 55%; }
-        .item-qty { font-weight: bold; color: #fff; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 6px; font-size: 0.9rem; }
-
-        .item-status { font-size: 0.75rem; font-style: italic; text-transform: uppercase; font-weight: 700; }
-        .st-waiting { color: #f1c40f; }
-        .st-cooking { color: #3498db; }
-        .st-done { color: #2ecc71; }
-        .st-served { color: #7f8c8d; font-style: italic; text-decoration: line-through; }
-        .item-row.served { opacity: 0.5; }
-        .serve-check { transform: scale(1.3); cursor: pointer; filter: hue-rotate(180deg); }
-
-        .card-footer-custom {
-            padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: right; flex-shrink: 0; margin-top: auto;
-        }
-
-        /* -- STYLE MỚI CHO TỔNG TIỀN: GOLD GLOW -- */
-        .total-price {
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: #f1c40f; /* Màu vàng kim */
-            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
-            letter-spacing: 0.5px;
-        }
-
-        .noti-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; display: none; }
-        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}">
 </head>
 <body>
 
 <div class="bg-image-container"></div>
-
-<div class="sidebar">
-    <div class="user-panel">
-        {% if avatar_url %}
-            <img src="{{ avatar_url }}" alt="Avatar" class="user-avatar-img">
-        {% else %}
-            <i class="fas fa-user-circle user-avatar-icon"></i>
-        {% endif %}
-        <div class="user-name">{{ user }}</div>
-    </div>
-
-    <div class="d-flex flex-column flex-grow-1">
-        <a href="{{ url_for('main.phucvu') }}" class="nav-link"><i class="fas fa-th-large fa-lg"></i> Sơ đồ bàn</a>
-        <a href="{{ url_for('main.menu') }}" class="nav-link"><i class="fas fa-utensils fa-lg"></i> Gọi món</a>
-        <a href="#" class="nav-link active"><i class="fas fa-clipboard-list fa-lg"></i> Danh sách đơn</a>
-        <a href="{{ url_for('main.logout') }}" class="nav-link logout-link"><i class="fas fa-sign-out-alt fa-lg"></i> Đăng xuất</a>
-    </div>
-</div>
+{% include 'layout/sidebar.html' %}
 
 <div class="main-content">
-
     <div class="top-bar">
         <h2 class="fw-bold m-0" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Quản lý Order</h2>
-
         <div class="search-group">
             <div class="search-box">
-                <input type="text" id="searchInput" onkeyup="searchOrder()" placeholder="🔍 Tìm số bàn...">
+                <input type="text" id="searchInput" onkeyup="searchOrder()" placeholder="Tìm số bàn...">
                 <i class="fas fa-search"></i>
             </div>
             <div class="icon-btn" onclick="markAsRead()">
@@ -172,8 +30,6 @@
 
     <div class="order-grid" id="orderGrid">
         {% for order in orders %}
-        {% set waited_min = ((now - order.ThoiGianVao).total_seconds() / 60) | int %}
-
         <div class="order-card" data-table="{{ order.SoBan }}">
             <div class="card-header-custom">
                 <div>
@@ -189,18 +45,20 @@
 
             <div class="order-items">
                 {% for item in order.chi_tiet %}
-                <div class="item-row {% if item.TrangThaiMon == 'Served' %}served{% endif %}">
+                <div class="item-row {% if item.TrangThaiMon == 'Served' or item.TrangThaiMon == 'DaPhucVu' %}served{% endif %}">
                     <div class="d-flex flex-column" style="width: 55%;">
-                        <span class="item-name">{{ item.mon_an.TenMon }}</span>
+
+                        <span class="item-name">{{ item.TenMon }}</span>
+
                         {% if item.GhiChu %}
                             <small class="text-muted fst-italic" style="font-size: 0.7rem;">📝 {{ item.GhiChu }}</small>
                         {% endif %}
 
-                        <small class="fw-bold {{ item.status_css }}" style="font-size: 0.7rem;">
-                            {% if item.TrangThaiMon == 'ChoCheBien' %} Chờ nấu
-                            {% elif item.TrangThaiMon == 'DangCheBien' %} Đang nấu
-                            {% elif item.TrangThaiMon == 'HoanTat' %} ✅ Bếp đã xong
-                            {% elif item.TrangThaiMon == 'Served' %} Đã phục vụ
+                        <small class="fw-bold" style="font-size: 0.7rem;">
+                            {% if item.TrangThaiMon == 'ChoCheBien' %} <span class="text-warning">Chờ nấu</span>
+                            {% elif item.TrangThaiMon == 'DangCheBien' %} <span class="text-info">Đang nấu</span>
+                            {% elif item.TrangThaiMon == 'HoanTat' %} <span class="text-success">Bếp đã xong</span>
+                            {% elif item.TrangThaiMon == 'DaPhucVu' or item.TrangThaiMon == 'Served' %} <span class="st-served">Đã phục vụ</span>
                             {% endif %}
                         </small>
                     </div>
@@ -209,9 +67,9 @@
                         <span class="item-qty">x{{ item.SoLuong }}</span>
                         <div class="form-check">
                             <input class="form-check-input serve-check" type="checkbox"
-                                   onchange="serveDish(this, {{ item.MaChiTiet }}, '{{ item.mon_an.TenMon }}', {{ order.SoBan }})"
-                                   {% if item.TrangThaiMon == 'Served' %} checked disabled {% endif %}
-                                   {% if item.TrangThaiMon != 'HoanTat' and item.TrangThaiMon != 'Served' %} disabled style="opacity: 0.2;" title="Món chưa nấu xong" {% endif %}>
+                                   onchange="serveDish(this, {{ item.MaChiTiet }}, '{{ item.TenMon }}', {{ order.SoBan }})"
+                                   {% if item.TrangThaiMon == 'DaPhucVu' or item.TrangThaiMon == 'Served' %} checked disabled {% endif %}
+                                   {% if item.TrangThaiMon != 'HoanTat' and item.TrangThaiMon != 'DaPhucVu' and item.TrangThaiMon != 'Served' %} disabled style="opacity: 0.2;" title="Món chưa nấu xong" {% endif %}>
                         </div>
                     </div>
                 </div>
@@ -235,65 +93,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Logic JS giữ nguyên
-    function serveDish(checkbox, id, dishName, tableNum) {
-        if(checkbox.checked) {
-            fetch('/api/update-status', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: id, status: 'Served' })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if(data.success) {
-                    showToast(`Đã phục vụ: ${dishName} (Bàn ${tableNum})`);
-                    checkbox.disabled = true;
-                    checkbox.closest('.item-row').classList.add('served');
-                    const statusText = checkbox.closest('.item-row').querySelector('small.fw-bold');
-                    statusText.className = 'fw-bold st-served';
-                    statusText.innerText = 'Đã phục vụ';
-                    new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play().catch(()=>{});
-                } else {
-                    alert("Lỗi cập nhật!");
-                    checkbox.checked = false;
-                }
-            });
-        }
-    }
-
-    function searchOrder() {
-        const text = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll('.order-card').forEach(card => {
-            const tableNum = card.dataset.table;
-            const content = card.innerText.toLowerCase();
-            if (tableNum.includes(text) || content.includes(text)) { card.style.display = 'flex'; } else { card.style.display = 'none'; }
-        });
-    }
-
-    let currentNotiCount = 0;
-    const notiSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-
-    function checkNotifications() {
-        fetch('/api/get-notifications').then(r => r.json()).then(data => {
-            const count = data.length; const badge = document.getElementById('notiBadge');
-            if (count > 0) {
-                badge.style.display = 'flex'; badge.innerText = count;
-                if (count > currentNotiCount) { showToast(data[0].msg); notiSound.play().catch(e=>{}); }
-            } else { badge.style.display = 'none'; }
-            currentNotiCount = count;
-        });
-    }
-    function showToast(msg) {
-        document.getElementById('toastContainer').insertAdjacentHTML('beforeend', `<div class="toast show align-items-center text-white bg-success border-0 mb-2 shadow"><div class="d-flex"><div class="toast-body fw-bold"><i class="fas fa-check-circle me-2"></i> ${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
-        setTimeout(() => { const t = document.querySelectorAll('.toast'); if(t.length > 0) t[0].remove(); }, 5000);
-    }
-    function markAsRead() {
-        fetch('/api/read-notifications', { method: 'POST' }).then(r => r.json()).then(d => { if(d.success) { document.getElementById('notiBadge').style.display = 'none'; currentNotiCount = 0; document.getElementById('toastContainer').innerHTML = ''; } });
-    }
-
-    setInterval(() => { location.reload(); }, 30000);
-    setInterval(checkNotifications, 3000);
-</script>
+<script src="{{ url_for('static', filename='JS/notification.js') }}"></script>
+<script src="{{ url_for('static', filename='JS/order-list.js') }}"></script>
 </body>
 </html>

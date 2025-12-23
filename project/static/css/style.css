@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-color: #EFE9E3;
+    --sidebar-bg: #E1D0B3;
+    --sidebar-text: #5A7863;
+    --sidebar-active: #90AB8B;
+    --primary-color: #A18D6D;
+    --text-color: #2c3e50;
+    --border-color: #D9CFC7;
+}
+
+body {
+    font-family: "Baloo 2", sans-serif !important;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-color); /
+    color: var(--text-color);
+}
+
+.bg-image-container {
+    display: none;
+}
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.user-panel {
+    padding: 30px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.user-name {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--sidebar-text);
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+.user-avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-link {
+    color: var(--sidebar-text);
+    font-weight: 600;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-size: 1.1rem;
+    border-left: 4px solid transparent;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #4a6352;
+    padding-left: 30px;
+}
+
+.nav-link.active {
+    background: var(--sidebar-active);
+    color: #fff;
+    border-left-color: #5A7863;
+}
+
+.logout-link {
+    margin-top: auto;
+    margin-bottom: 20px;
+    color: #F5AFAF !important;
+}
+.logout-link:hover {
+    background: #F9DFDF !important;
+    color: #d64541 !important;
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 30px;
+    height: 100vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.modal { z-index: 1050; }
+.modal-backdrop { z-index: 1040; }
+
+#toastContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

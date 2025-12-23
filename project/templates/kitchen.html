@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bếp - Danh sách món | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kitchen.css') }}">
+</head>
+<body>
+
+<div class="bg-image-container"></div>
+
+<div class="kitchen-header">
+    <div class="d-flex gap-3 align-items-center">
+        <i class="fas fa-fire-alt text-warning" style="font-size: 2rem;"></i>
+        <div class="fw-bold fs-4 text-white">KHU VỰC BẾP</div>
+    </div>
+
+    <div class="user-section text-white">
+        <span class="fw-bold me-2">{{ user }}</span>
+        {% if avatar_url %}
+            <img src="{{ avatar_url }}" class="user-avatar" alt="Avatar">
+        {% else %}
+            <img src="https://cdn-icons-png.flaticon.com/512/3461/3461980.png" class="user-avatar" alt="Default">
+        {% endif %}
+    </div>
+</div>
+
+<div class="kitchen-container">
+
+    <div class="col-waiting">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="fw-bold text-warning fs-5"> CHỜ NẤU ({{ waiting_list|length }})</div>
+            <div class="tab-group">
+                <a href="?mode=order" class="nav-tab-item {% if mode=='order' %}active{% endif %}">Đơn lẻ</a>
+                <a href="?mode=dish" class="nav-tab-item {% if mode=='dish' %}active{% endif %}">Gộp món</a>
+            </div>
+        </div>
+
+        <div class="task-list">
+            {% for item in waiting_list %}
+                <div class="task-card" style="border-left-color: {% if item.IsAggregated %}#f1c40f{% else %}#e74c3c{% endif %};">
+                    <div class="task-info">
+                        <div class="dish-name">
+                            {{ item.TenMon }}
+                            <span class="dish-qty">x{{ item.SoLuong }}</span>
+                        </div>
+
+                        <div>
+                            {% if item.IsAggregated %}
+                                <i class="fas fa-layer-group text-info"></i> Các bàn: <strong>{{ item.SoBan }}</strong>
+                            {% else %}
+                                <i class="fas fa-chair"></i> Bàn: <strong class="text-danger" style="font-size: 1.1rem;">{{ item.SoBan }}</strong>
+                                <span class="ms-2 small">| 🕒 {{ item.ThoiGian }}</span>
+                            {% endif %}
+                        </div>
+
+                        {% if not item.IsAggregated and item.GhiChu %}
+                            <div class="mt-2 text-warning small fst-italic"><i class="fas fa-comment-alt"></i> {{ item.GhiChu }}</div>
+                        {% endif %}
+                    </div>
+
+                    {% if item.IsAggregated %}
+                        <button class="btn-action btn-cook" onclick="updateStatusGroup('{{ item.IDs }}', 'DangCheBien', this)">
+                            <i class="fas fa-fire"></i> Nấu {{ item.SoLuong }} món này
+                        </button>
+                    {% else %}
+                        <button class="btn-action btn-cook" onclick="updateStatusSingle({{ item.MaChiTiet }}, 'DangCheBien', this)">
+                            <i class="fas fa-fire"></i> Bắt đầu nấu
+                        </button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="text-center mt-5">
+                    <p>Hết món chờ.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-cooking">
+        <div class="mb-4 fw-bold text-success fs-5">ĐANG NẤU ({{ cooking_list|length }})</div>
+        <div class="task-list">
+            {% for item in cooking_list %}
+            <div class="task-card" style="border-left-color: #2ecc71;">
+                <div class="task-info">
+                    <div class="dish-name">
+                        {{ item.TenMon }}
+                        <span class="dish-qty">x{{ item.SoLuong }}</span>
+                    </div>
+
+                    <div>
+                        <i class="fas fa-chair"></i> Bàn: <strong class="text-success" style="font-size: 1.1rem;">{{ item.SoBan }}</strong>
+                        <span class="ms-2 small">| 🕒 {{ item.ThoiGian }}</span>
+                    </div>
+
+                    {% if item.GhiChu %}
+                        <div class="mt-2 text-warning small fst-italic"><i class="fas fa-comment-alt"></i> {{ item.GhiChu }}</div>
+                    {% endif %}
+                </div>
+
+                <button class="btn-action btn-done" onclick="updateStatusSingle({{ item.MaChiTiet }}, 'HoanTat', this)">
+                    <i class="fas fa-check"></i> Xong món
+                </button>
+            </div>
+            {% else %}
+                <div class="text-center mt-5">
+                    <p>Bếp đang rảnh.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('main.logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+
+<script src="{{ url_for('static', filename='JS/kitchen.js') }}"></script>
+</body>
+</html>

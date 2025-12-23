@@ -1,180 +1,50 @@
 {% extends 'admin/base.html' %}
 
 {% block head_css %}
-    {{ super() }}
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <style>
-        /* --- 1. CẤU HÌNH CHUNG --- */
-        body {
-            font-family: 'Baloo 2', cursive !important;
-            min-height: 100vh;
-            color: #333;
-            background-color: #f4f6f9;
-        }
-
-        /* Ẩn Navbar mặc định của Flask-Admin */
-        .navbar-default { display: none !important; }
-
-        /* Ảnh nền chìm */
-        .bg-image-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                        url('https://res.cloudinary.com/dschg4bcn/image/upload/v1764869749/BeautyPlus-IMAGE-UPSCALER-1764869704815_plfqzl.jpg');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-        }
-
-        /* --- 2. CUSTOM TOP NAVBAR --- */
-        .admin-navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            height: 70px;
-            padding: 0 30px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        /* --- KHU VỰC BÊN TRÁI (Logo + Dashboard) --- */
-        .nav-left {
-            display: flex; align-items: center; gap: 20px; /* Khoảng cách giữa Logo và Dashboard */
-        }
-
-        /* Logo */
-        .brand-logo {
-            font-size: 1.6rem; font-weight: 800; color: #d35400;
-            text-decoration: none !important; /* Bỏ gạch chân */
-            text-transform: uppercase;
-            display: flex; align-items: center; gap: 10px;
-            transition: 0.3s;
-        }
-        .brand-logo:hover { color: #e67e22; }
-
-        /* Đường gạch dọc ngăn cách */
-        .nav-divider {
-            width: 2px; height: 25px; background-color: #ddd;
-        }
-
-        /* Nút Dashboard (Nằm ngay cạnh Logo) */
-        .btn-home {
-            display: flex; align-items: center; gap: 8px;
-            color: #555; font-weight: 700;
-            text-decoration: none !important; /* Bỏ gạch chân */
-            padding: 8px 15px; border-radius: 12px;
-            transition: all 0.2s;
-            background: transparent; /* Nền trong suốt cho gọn */
-        }
-        .btn-home:hover {
-            background: rgba(211, 84, 0, 0.1); /* Hover hiện nền cam nhạt */
-            color: #d35400;
-            transform: translateY(-1px);
-        }
-
-        /* --- KHU VỰC BÊN PHẢI (Avatar + Logout) --- */
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-avatar {
-            width: 42px; height: 42px;
-            border-radius: 50%; object-fit: cover;
-            border: 2px solid #d35400;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .user-name { font-weight: 700; color: #2c3e50; font-size: 1.05rem; }
-
-        /* Nút Logout */
-        .btn-logout {
-            background: #fff; color: #c0392b;
-            border: 2px solid #c0392b;
-            font-weight: 700; border-radius: 30px; padding: 6px 20px;
-            text-decoration: none !important; /* Bỏ gạch chân */
-            transition: 0.3s;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .btn-logout:hover {
-            background: #c0392b; color: white;
-            box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* --- 3. CONTENT WRAPPER --- */
-        .main-container { padding: 30px; }
-
-        /* Class bọc nội dung trang quản lý (nền trắng) */
-        .content-wrapper {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            color: #333;
-            min-height: 80vh;
-        }
-
-        /* Custom Table Flask-Admin */
-        .table { color: #333 !important; background: white; }
-        .table thead th {
-            color: #d35400; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #eee;
-        }
-        .table-hover tbody tr:hover { background-color: #fffbf0; }
-
-        h3, h2 { color: #2c3e50 !important; font-weight: 800; margin-bottom: 20px; }
-
-        .form-control { border-radius: 8px; border: 1px solid #ccc; padding: 10px; }
-        .form-control:focus { border-color: #d35400; box-shadow: 0 0 0 0.2rem rgba(211, 84, 0, 0.25); }
-        .btn-primary { background-color: #2980b9; border-color: #2980b9; }
-
-        .breadcrumb { background: transparent; padding: 0; margin-bottom: 20px; }
-        .breadcrumb a { color: #d35400; text-decoration: none; font-weight: 600; }
-        .breadcrumb .active { color: #7f8c8d; }
-    </style>
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .user-panel {
+        float: right;
+        padding: 10px 15px;
+        color: #333; /* Chữ tối */
+        display: flex;
+        align-items: center;
+    }
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-left: 10px;
+        object-fit: cover;
+        border: 2px solid #ccc;
+    }
+    .user-name {
+        margin-right: 10px;
+        font-weight: bold;
+        color: #5A7863;
+    }
+</style>
 {% endblock %}
 
-{% block page_body %}
-    <div class="bg-image-container"></div>
+{% block access_control %}
+{% if session.loggedin %}
+<div class="user-panel">
+    <span class="user-name">{{ session.fullname }}</span>
 
-    <div class="admin-navbar">
-        <div class="nav-left">
-            <a href="/admin/" class="brand-logo"><i class="fas fa-shield-alt"></i> PTT ADMIN</a>
+    {% if session.avatar %}
+    <img src="{{ session.avatar }}" class="user-avatar" alt="Avatar">
+    {% else %}
+    <i class="fa fa-user-circle fa-2x"></i>
+    {% endif %}
 
-            <div class="nav-divider"></div> <a href="/admin/" class="btn-home"><i class="fas fa-home"></i> Dashboard</a>
-        </div>
+    <a href="/logout" class="btn btn-danger btn-xs" style="margin-left: 15px;">
+        <i class="fa fa-sign-out-alt"></i> Đăng xuất
+    </a>
+</div>
+{% endif %}
+{% endblock %}
 
-        <div class="nav-right">
-            <div class="user-info">
-                <span class="user-name">{{ session.fullname if session.fullname else 'Admin' }}</span>
-                {% if session.avatar %}
-                    <img src="{{ session.avatar }}" class="user-avatar" alt="Avatar">
-                {% else %}
-                    <img src="https://cdn-icons-png.flaticon.com/512/3461/3461980.png" class="user-avatar" alt="Default">
-                {% endif %}
-            </div>
-
-            <a href="{{ url_for('main.logout') }}" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-            </a>
-        </div>
-    </div>
-
-    <div class="container-fluid main-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% if request.path == '/admin/' %}
-            {% block body_dashboard %}{% endblock %}
-
-        {% else %}
-            <div class="content-wrapper">
-                {% block body %}{% endblock %}
-            </div>
-        {% endif %}
-    </div>
+{% block brand %}
+<a href="/admin" class="navbar-brand">PTT Quản Trị</a>
 {% endblock %}

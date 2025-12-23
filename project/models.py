@@ -3,34 +3,31 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-
-# 1. NHÂN VIÊN
 class NhanVien(db.Model):
     __tablename__ = 'NhanVien'
     MaNV = db.Column(db.Integer, primary_key=True)
-    TenDangNhap = db.Column(db.String(50), unique=True)
-    MatKhau = db.Column(db.String(255))
+    TenDangNhap = db.Column(db.String(50), unique=True, nullable=False)
+    MatKhau = db.Column(db.String(255), nullable=False)
     HoTen = db.Column(db.String(100))
     VaiTro = db.Column(db.String(20))
     Avatar = db.Column(db.Text)
 
+    def __str__(self):
+        return self.HoTen
 
-# 2. DANH MỤC & MÓN ĂN
 class NhomMon(db.Model):
     __tablename__ = 'NhomMon'
     MaNhom = db.Column(db.Integer, primary_key=True)
     TenNhom = db.Column(db.String(50))
     mon_ans = db.relationship('MonAn', backref='nhom', lazy=True)
 
-    # 👇 QUAN TRỌNG: Giúp hiển thị Tên Nhóm trong Admin thay vì Object ID
     def __str__(self):
         return self.TenNhom
-
 
 class MonAn(db.Model):
     __tablename__ = 'MonAn'
     MaMon = db.Column(db.Integer, primary_key=True)
-    MaCode = db.Column(db.String(20), unique=True)  # Mã món (VD: COM01)
+    MaCode = db.Column(db.String(20), unique=True)
     TenMon = db.Column(db.String(100))
     DonVi = db.Column(db.String(50))
     GiaTien = db.Column(db.Numeric(10, 0))
@@ -38,16 +35,16 @@ class MonAn(db.Model):
     DangKinhDoanh = db.Column(db.Boolean, default=True)
     MaNhom = db.Column(db.Integer, db.ForeignKey('NhomMon.MaNhom'))
 
+    def __str__(self):
+        return self.TenMon
 
-# 3. BÀN ĂN (TÍCH HỢP LOGIC HIỂN THỊ)
 class BanAn(db.Model):
     __tablename__ = 'BanAn'
     SoBan = db.Column(db.Integer, primary_key=True)
-    TrangThai = db.Column(db.String(20))
+    TrangThai = db.Column(db.String(20), default='Trong')
     Tang = db.Column(db.Integer, default=1)
     SoGhe = db.Column(db.Integer, default=4)
 
-    # --- Logic hiển thị cho HTML (Sơ đồ bàn) ---
     @property
     def css_class(self):
         if self.TrangThai == 'CoKhach': return 'bg-cokhach'
@@ -64,45 +61,31 @@ class BanAn(db.Model):
     def icon_class(self):
         if self.TrangThai == 'CoKhach': return 'fa-utensils'
         if self.TrangThai == 'DatTruoc': return 'fa-clock'
-        return 'fa-chair'
+        return 'fa-chair'  # Icon cái ghế cho bàn trống
 
+    def __str__(self):
+        return f"Bàn {self.SoBan}"
 
-# 4. HÓA ĐƠN (TÍCH HỢP LOGIC TÍNH TOÁN)
 class HoaDon(db.Model):
     __tablename__ = 'HoaDon'
     MaHoaDon = db.Column(db.Integer, primary_key=True)
     SoBan = db.Column(db.Integer, db.ForeignKey('BanAn.SoBan'))
-    MaNV_PhucVu = db.Column(db.Integer, db.ForeignKey('NhanVien.MaNV'))
+    MaNV_PhucVu = db.Column(db.Integer, db.ForeignKey('NhanVien.MaNV'), nullable=True)
+
     ThoiGianVao = db.Column(db.DateTime, default=datetime.now)
     ThoiGianRa = db.Column(db.DateTime, nullable=True)
+
     TongThanhToan = db.Column(db.Numeric(10, 0), default=0)
+    GiamGia = db.Column(db.Numeric(10, 0), default=0)
+    TienKhachDua = db.Column(db.Numeric(10, 0), default=0)
+    TienThua = db.Column(db.Numeric(10, 0), default=0)
+
     TrangThai = db.Column(db.String(20), default='ChuaThanhToan')
     GhiChu = db.Column(db.String(255))
 
-    # Thêm các cột tính toán nếu cần (như TongTienHang, VAT...)
-    TongTienHang = db.Column(db.Numeric(10, 0), default=0)
-    GiamGia = db.Column(db.Numeric(10, 0), default=0)
-    VAT = db.Column(db.Numeric(10, 0), default=0)
-
     chi_tiet = db.relationship('ChiTietHoaDon', backref='hoa_don', lazy=True)
+    phieu_goi = db.relationship('PhieuGoi', backref='hoa_don', lazy=True)
 
-    # --- Logic tính toán ---
-    @property
-    def is_completed(self):
-        """Kiểm tra xem tất cả món trong đơn đã xong chưa"""
-        for item in self.chi_tiet:
-            if item.TrangThaiMon in ['ChoCheBien', 'DangCheBien']:
-                return False
-        return True
-
-    @property
-    def waited_min(self):
-        """Tính số phút khách đã chờ"""
-        delta = datetime.now() - self.ThoiGianVao
-        return int(delta.total_seconds() / 60)
-
-
-# 5. CHI TIẾT HÓA ĐƠN (TÍCH HỢP LOGIC MÀU SẮC MÓN)
 class ChiTietHoaDon(db.Model):
     __tablename__ = 'ChiTietHoaDon'
     MaChiTiet = db.Column(db.Integer, primary_key=True)
@@ -111,13 +94,11 @@ class ChiTietHoaDon(db.Model):
     SoLuong = db.Column(db.Integer, default=1)
     DonGia = db.Column(db.Numeric(10, 0))
     GhiChu = db.Column(db.String(255))
-    # Dùng String(50) để tránh lỗi Enum nếu DB thay đổi
     TrangThaiMon = db.Column(db.String(50), default='ChoCheBien')
     ThoiGianGoi = db.Column(db.DateTime, default=datetime.now)
 
-    mon_an = db.relationship('MonAn', backref='chi_tiet', lazy=True)
+    mon_an = db.relationship('MonAn', backref='chi_tiet_hoadon', lazy=True)
 
-    # --- Logic class CSS cho trạng thái món ---
     @property
     def status_css(self):
         if self.TrangThaiMon == 'ChoCheBien': return 'st-waiting'
@@ -126,8 +107,25 @@ class ChiTietHoaDon(db.Model):
         if self.TrangThaiMon == 'Served': return 'st-served'
         return ''
 
+class PhieuGoi(db.Model):
+    __tablename__ = 'PhieuGoi'
+    MaPhieu = db.Column(db.Integer, primary_key=True)
+    MaHoaDon = db.Column(db.Integer, db.ForeignKey('HoaDon.MaHoaDon'))
+    ThoiGianTao = db.Column(db.DateTime, default=datetime.now)
 
-# 6. THÔNG BÁO
+    chi_tiet = db.relationship('ChiTietPhieuGoi', backref='phieu_goi', lazy=True)
+
+class ChiTietPhieuGoi(db.Model):
+    __tablename__ = 'ChiTietPhieuGoi'
+    ID = db.Column(db.Integer, primary_key=True)
+    MaPhieu = db.Column(db.Integer, db.ForeignKey('PhieuGoi.MaPhieu'))
+    MaMon = db.Column(db.Integer, db.ForeignKey('MonAn.MaMon'))
+    SoLuong = db.Column(db.Integer, default=1)
+    GhiChu = db.Column(db.String(255))
+    TrangThai = db.Column(db.String(50), default='ChoCheBien')
+
+    mon_an = db.relationship('MonAn', backref='chi_tiet_phieugoi', lazy=True)
+
 class ThongBao(db.Model):
     __tablename__ = 'ThongBao'
     MaTB = db.Column(db.Integer, primary_key=True)

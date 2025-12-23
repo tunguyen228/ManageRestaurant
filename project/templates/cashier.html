@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thu ngân | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cashier.css') }}">
+</head>
+<body>
+
+<div class="bg-image-container"></div>
+{% include 'layout/sidebar.html' %}
+
+<div class="main-content">
+    <nav class="navbar navbar-expand-lg glass-card mb-4" style="height: auto; padding: 15px;">
+        <div class="container-fluid">
+            <span class="fw-bold text-dark fs-4"><i class="fas fa-cash-register text-success"></i> Thu Ngân & Thanh Toán</span>
+        </div>
+    </nav>
+
+    <div class="row h-100">
+        <div class="col-md-7 mb-3">
+            <div class="card glass-card p-4 h-100 shadow-sm">
+                <h4 class="text-secondary fw-bold mb-3"><i class="fas fa-list-ul"></i> Chi tiết Hóa đơn</h4>
+
+                <div class="d-flex justify-content-between align-items-end mb-4 p-3 bg-white rounded shadow-sm border">
+                    <div class="w-50 me-3">
+                        <label class="form-label fw-bold text-muted">Chọn Bàn:</label>
+                        <select id="select_table" class="form-select form-select-lg fw-bold text-dark" onchange="fetchBill()">
+                            <option value="">-- Chọn bàn --</option>
+                            {% for ban in list_ban %}
+                                <option value="{{ ban.SoBan }}">Bàn {{ ban.SoBan }} ({{ ban.status_text }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-end">
+                        <p class="mb-1 text-muted small">Mã HĐ: <strong id="bill_id" class="text-dark fs-5">---</strong></p>
+                        <p class="mb-0 text-muted small">Giờ vào: <strong id="time_in" class="text-dark">---</strong></p>
+                    </div>
+                </div>
+
+                <div class="table-responsive flex-grow-1 border rounded bg-white">
+                    <table class="table table-hover table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3">Tên món</th>
+                                <th class="text-center">SL</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end pe-3">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bill_items">
+                            <tr><td colspan="4" class="text-center text-muted py-5"><i>Vui lòng chọn bàn</i></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 mb-3">
+            <div class="card glass-card p-4 h-100 shadow-sm d-flex flex-column">
+                <h4 class="text-success fw-bold mb-3"><i class="fas fa-calculator"></i> Tính Toán</h4>
+
+                <div class="flex-grow-1">
+                    <div class="p-3 bg-white rounded border mb-3">
+                        <p class="d-flex justify-content-between summary-text">Tổng món: <strong id="summary_quantity">0</strong></p>
+                        <p class="d-flex justify-content-between summary-text">Tạm tính: <strong id="summary_subtotal">0 VNĐ</strong></p>
+                        <p class="d-flex justify-content-between summary-text">VAT (10%): <strong id="summary_vat" class="text-secondary">0 VNĐ</strong></p>
+                        <p class="d-flex justify-content-between summary-text text-danger border-bottom pb-2">Giảm giá: <strong id="summary_discount">0 VNĐ</strong></p>
+
+                        <div class="total-pay-row mt-2">
+                            <span class="fw-bold">TỔNG CỘNG:</span>
+                            <strong id="summary_total" data-total="0" class="fs-4">0 VNĐ</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Khách đưa (VNĐ)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-money-bill-wave text-success"></i></span>
+                            <input type="text" id="customer_cash" class="form-control form-control-lg fw-bold text-success" placeholder="0" oninput="calculateChange()">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted">Tiền thừa</label>
+                        <div class="input-group">
+                             <span class="input-group-text bg-light border-0"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
+                             <div id="change_amount_display" class="form-control form-control-lg bg-light text-dark fw-bold border-0 d-flex align-items-center">0 VNĐ</div>
+                             <input type="hidden" id="change_amount" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="btn_checkout" class="btn btn-checkout-custom btn-lg w-100 py-3" onclick="checkout()" disabled>
+                    <i class="fas fa-check-circle me-2"></i> Xác nhận Thanh toán
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='JS/cashier.js') }}"></script>
+
+</body>
+</html>

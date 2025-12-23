@@ -1,0 +1,143 @@
+.floor-tabs {
+    background: #EAE4D5;
+    padding: 5px;
+    border-radius: 50px;
+    display: inline-flex;
+    border: 1px solid #D9CFC7;
+}
+
+.floor-tabs .nav-link {
+    border-radius: 40px;
+    padding: 10px 45px;
+    color: #999;
+    border: none;
+    margin: 0;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.floor-tabs .nav-link:hover {
+    color: #5A7863;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.floor-tabs .nav-link.active {
+    background: #90AB8B;
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.table-box {
+    height: 160px;
+    border-radius: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #D9CFC7;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.table-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-color: #9BB4C0;
+}
+
+.table-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    font-weight: 800;
+    z-index: 2;
+    color: #5A7863;
+}
+
+.table-status-text {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 2;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.table-capacity {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.9rem;
+    background: #F2F2F2;
+    color: #555;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    z-index: 3;
+}
+
+.bg-icon { display: none; }
+
+.bg-trong {
+    background: #fff;
+    border: 1px solid #EAE4D5;
+}
+.bg-trong .table-title { color: #5A7863; }
+.bg-trong .table-status-text { color: #90AB8B; }
+
+.bg-cokhach {
+    background: #F5AFAF;
+    border: 1px solid #F5AFAF;
+}
+.bg-cokhach .table-title { color: #fff; }
+.bg-cokhach .table-status-text { color: #fff; }
+.bg-cokhach .table-capacity { background: rgba(255,255,255,0.3); color: #fff; }
+
+.bg-dattruoc {
+    background: #9BB4C0;
+    border: 1px solid #9BB4C0;
+}
+.bg-dattruoc .table-title { color: #fff; }
+.bg-dattruoc .table-status-text { color: #fff; }
+.bg-dattruoc .table-capacity { background: rgba(255,255,255,0.3); color: #fff; }
+
+#confirmModal .modal-content {
+    background: #fff;
+    border: none;
+    color: #333;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+#confirmModal .modal-title { color: #333; }
+#confirmModal p.text-white-50 { color: #666 !important; }
+
+#confirmModal .btn-outline-light {
+    color: #555;
+    border-color: #ccc;
+}
+#confirmModal .btn-outline-light:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+#confirmModal .btn-primary {
+    background: #90AB8B;
+    border: none;
+}
+
+#confirmModal .btn-primary:hover {
+    background: #5A7863;
+}
+
+#confirmModal .btn-close { filter: none; }
+
+#modalTableNum{
+    color: #5A7863 !important;
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sơ đồ bàn | PTT Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+</head>
+<body>
+
+<div class="bg-image-container"></div>
+{% include 'layout/sidebar.html' %}
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold m-0" style="font-size: 2.5rem; letter-spacing: 1px;">Quản lý sơ đồ bàn</h2>
+        <ul class="nav floor-tabs" id="floorTabs">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#floor1">Tầng 1 (1-10)</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#floor2">Tầng 2 (11-20)</button></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="floor1">
+            <div class="row g-4">
+                {% for ban in list_ban if ban.Tang == 1 or ban.Tang == None %}
+                    <div class="{% if ban.SoBan in [9, 10] %} col-xl-6 col-lg-6 col-md-12 {% else %} col-xl-3 col-lg-3 col-md-6 {% endif %}">
+                        <div class="table-box {{ ban.css_class }}" onclick="confirmSelectTable('{{ ban.SoBan }}', '{{ ban.TrangThai }}')">
+                            <div class="table-capacity"><i class="fas fa-user-friends"></i> {{ ban.SoGhe }}</div>
+                            <div class="table-title">Bàn {{ ban.SoBan }}</div>
+                            <div class="table-status-text">{{ ban.status_text }}</div>
+                            <i class="fas {{ ban.icon_class }} bg-icon"></i>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="floor2">
+            <div class="row g-4">
+                {% for ban in list_ban if ban.Tang == 2 %}
+                    <div class="{% if ban.SoBan in [19, 20] %} col-xl-6 col-lg-6 col-md-12 {% else %} col-xl-3 col-lg-3 col-md-6 {% endif %}">
+                        <div class="table-box {{ ban.css_class }}" onclick="confirmSelectTable('{{ ban.SoBan }}', '{{ ban.TrangThai }}')">
+                            <div class="table-capacity"><i class="fas fa-user-friends"></i> {{ ban.SoGhe }}</div>
+                            <div class="table-title">Bàn {{ ban.SoBan }}</div>
+                            <div class="table-status-text">{{ ban.status_text }}</div>
+                            <i class="fas {{ ban.icon_class }} bg-icon"></i>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">Xác nhận chọn bàn</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <h1 class="fw-bold text-primary mb-3" id="modalTableNum">0</h1>
+        <p class="text-white-50 fs-5">Mở menu gọi món cho bàn này?</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center pb-4">
+        <button type="button" class="btn btn-outline-light px-4 rounded-pill" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-primary px-5 fw-bold rounded-pill" id="btnGoToMenu">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='JS/table-list.js') }}"></script>
+</body>
+</html>

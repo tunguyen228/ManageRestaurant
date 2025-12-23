@@ -1,0 +1,102 @@
+.menu-layout { display: flex; height: 100vh; margin-left: 260px; }
+.menu-section { flex: 7; padding: 25px; overflow-y: auto; background: #EFE9E3; }
+.order-section {
+    flex: 3;
+    background: #fff;
+    border-left: 1px solid #D9CFC7;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.top-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.search-box { position: relative; width: 250px; }
+.search-box input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #D9CFC7;
+    background: #fff;
+    color: #333;
+}
+.search-box input:focus { outline: none; border-color: #90AB8B; }
+.search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #999; }
+
+.cat-chip {
+    padding: 8px 25px;
+    border-radius: 30px;
+    background: #EAE4D5;
+    border: 1px solid #D9CFC7;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #5A7863;
+    font-weight: 600;
+}
+.cat-chip:hover { background: #fff; border-color: #90AB8B; }
+.cat-chip.active {
+    background: #90AB8B;
+    color: #fff;
+    border-color: #90AB8B;
+}
+
+.dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 10px; }
+.dish-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #EAE4D5;
+    color: #333;
+    transition: 0.2s;
+}
+.dish-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #90AB8B;
+}
+.dish-img { height: 130px; width: 100%; object-fit: cover; }
+
+.qty-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #f0f0f0; border: 1px solid #ddd;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #333; transition: 0.2s;
+}
+.qty-btn:hover { background: #90AB8B; color: #fff; border-color: #90AB8B; }
+
+.order-section .form-select {
+    background-color: #F2F2F2;
+    color: #5A7863 !important;
+    border: 1px solid #D9CFC7;
+    font-weight: 700;
+}
+
+#cart-total {
+    color: #A18D6D !important;
+    text-shadow: none !important;
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+.order-section .fs-5 span:first-child {
+    color: #555;
+    font-weight: 700;
+}
+
+.btn-submit-kitchen {
+    background: #F5AFAF;
+    border: none;
+    color: #fff;
+    padding: 15px;
+    border-radius: 50px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-kitchen:hover {
+    background: #e09090;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(245, 175, 175, 0.5);
+}

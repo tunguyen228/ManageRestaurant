@@ -1,0 +1,30 @@
+.glass-card {
+    background: #fff;
+    border-radius: 15px;
+    border: 1px solid #D9CFC7;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.table-custom th { background-color: #F9DFDF !important; color: #A18D6D; font-weight: 700; }
+.table-responsive { background: white; border-radius: 10px; border: 1px solid #eee; }
+
+.summary-text { font-size: 1.05rem; display: flex; justify-content: space-between; margin-bottom: 8px; color: #555; }
+.total-pay-row {
+    background-color: #F2F2F2;
+    border: 2px dashed #90AB8B;
+    border-radius: 10px; padding: 10px;
+    color: #5A7863; margin-top: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.btn-checkout-custom {
+    background: #90AB8B; border: none; font-weight: 800; color: white;
+    border-radius: 12px; transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(144, 171, 139, 0.3);
+}
+.btn-checkout-custom:hover:not(:disabled) {
+    background: #7a9476; transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(144, 171, 139, 0.4); color: white;
+}
+.btn-checkout-custom:disabled { background: #ccc; cursor: not-allowed; }

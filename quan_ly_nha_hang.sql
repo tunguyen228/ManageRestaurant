@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `banan`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `banan` (
   `SoBan` int NOT NULL,
-  `TrangThai` enum('Trong','CoKhach','DatTruoc') COLLATE utf8mb4_unicode_ci DEFAULT 'Trong',
+  `TrangThai` enum('Trong','CoKhach','DatTruoc') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Trong',
   `Tang` int DEFAULT '1',
   `SoGhe` int DEFAULT '4',
   PRIMARY KEY (`SoBan`)
@@ -54,15 +54,15 @@ CREATE TABLE `chitiethoadon` (
   `MaMon` int NOT NULL,
   `SoLuong` int DEFAULT '1',
   `DonGia` decimal(10,0) NOT NULL,
-  `TrangThaiMon` enum('ChoCheBien','DangCheBien','HoanTat','DaHuy','Served') COLLATE utf8mb4_unicode_ci DEFAULT 'ChoCheBien',
+  `TrangThaiMon` enum('ChoCheBien','DangCheBien','HoanTat','DaHuy','Served') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'ChoCheBien',
   `ThoiGianGoi` datetime DEFAULT CURRENT_TIMESTAMP,
-  `GhiChu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `GhiChu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`MaChiTiet`),
   KEY `MaHoaDon` (`MaHoaDon`),
   KEY `MaMon` (`MaMon`),
   CONSTRAINT `chitiethoadon_ibfk_1` FOREIGN KEY (`MaHoaDon`) REFERENCES `hoadon` (`MaHoaDon`),
   CONSTRAINT `chitiethoadon_ibfk_2` FOREIGN KEY (`MaMon`) REFERENCES `monan` (`MaMon`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,8 +71,40 @@ CREATE TABLE `chitiethoadon` (
 
 LOCK TABLES `chitiethoadon` WRITE;
 /*!40000 ALTER TABLE `chitiethoadon` DISABLE KEYS */;
-INSERT INTO `chitiethoadon` VALUES (1,1,2,2,42000,'Served','2025-12-04 19:05:53',''),(2,1,3,1,45000,'Served','2025-12-04 19:05:53',''),(3,1,1,2,45000,'Served','2025-12-04 19:07:03',''),(4,2,2,1,42000,'Served','2025-12-05 00:18:21',''),(5,2,9,1,30000,'Served','2025-12-05 13:14:23',''),(6,3,2,1,42000,'HoanTat','2025-12-05 13:15:21',''),(7,3,3,1,45000,'HoanTat','2025-12-05 13:15:21','');
+INSERT INTO `chitiethoadon` VALUES (1,1,2,2,42000,'ChoCheBien','2025-12-23 23:41:04',NULL),(2,1,11,1,55000,'ChoCheBien','2025-12-23 23:41:04',NULL);
 /*!40000 ALTER TABLE `chitiethoadon` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `chitietphieugoi`
+--
+
+DROP TABLE IF EXISTS `chitietphieugoi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `chitietphieugoi` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `MaPhieu` int NOT NULL,
+  `MaMon` int NOT NULL,
+  `SoLuong` int NOT NULL,
+  `GhiChu` varchar(45) DEFAULT NULL,
+  `TrangThai` enum('ChoCheBien','DangCheBien','HoanTat','DaPhucVu') DEFAULT 'ChoCheBien',
+  PRIMARY KEY (`ID`),
+  KEY `MaPhieu_idx` (`MaPhieu`),
+  KEY `MaMon_idx` (`MaMon`),
+  CONSTRAINT `MaMon` FOREIGN KEY (`MaMon`) REFERENCES `monan` (`MaMon`),
+  CONSTRAINT `MaPhieu` FOREIGN KEY (`MaPhieu`) REFERENCES `phieugoi` (`MaPhieu`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chitietphieugoi`
+--
+
+LOCK TABLES `chitietphieugoi` WRITE;
+/*!40000 ALTER TABLE `chitietphieugoi` DISABLE KEYS */;
+INSERT INTO `chitietphieugoi` VALUES (1,1,2,2,'','DaPhucVu'),(2,1,11,1,'','DaPhucVu');
+/*!40000 ALTER TABLE `chitietphieugoi` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -92,14 +124,16 @@ CREATE TABLE `hoadon` (
   `TongTienHang` decimal(10,0) DEFAULT '0',
   `GiamGia` decimal(10,0) DEFAULT '0',
   `VAT` decimal(10,0) DEFAULT '0',
-  `TrangThai` enum('ChuaThanhToan','DaThanhToan') COLLATE utf8mb4_unicode_ci DEFAULT 'ChuaThanhToan',
-  `GhiChu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TrangThai` enum('ChuaThanhToan','DaThanhToan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'ChuaThanhToan',
+  `GhiChu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TienKhachDua` decimal(10,0) DEFAULT '0',
+  `TienThua` decimal(10,0) DEFAULT '0',
   PRIMARY KEY (`MaHoaDon`),
   KEY `SoBan` (`SoBan`),
   KEY `MaNV_PhucVu` (`MaNV_PhucVu`),
   CONSTRAINT `hoadon_ibfk_1` FOREIGN KEY (`SoBan`) REFERENCES `banan` (`SoBan`),
   CONSTRAINT `hoadon_ibfk_2` FOREIGN KEY (`MaNV_PhucVu`) REFERENCES `nhanvien` (`MaNV`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +142,7 @@ CREATE TABLE `hoadon` (
 
 LOCK TABLES `hoadon` WRITE;
 /*!40000 ALTER TABLE `hoadon` DISABLE KEYS */;
-INSERT INTO `hoadon` VALUES (1,1,3,'2025-12-04 19:05:53','2025-12-04 19:10:14',240900,0,0,0,'DaThanhToan',NULL),(2,1,4,'2025-12-05 00:18:21','2025-12-05 14:31:45',79200,0,0,0,'DaThanhToan',NULL),(3,2,4,'2025-12-05 13:15:21','2025-12-05 14:07:10',95700,0,0,0,'DaThanhToan',NULL);
+INSERT INTO `hoadon` VALUES (1,1,NULL,'2025-12-23 23:41:04','2025-12-23 23:42:03',152900,0,0,0,'DaThanhToan',NULL,200000,47100);
 /*!40000 ALTER TABLE `hoadon` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,12 +155,12 @@ DROP TABLE IF EXISTS `monan`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `monan` (
   `MaMon` int NOT NULL AUTO_INCREMENT,
-  `MaCode` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `TenMon` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `DonVi` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `MaCode` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TenMon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `DonVi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `GiaTien` decimal(10,0) NOT NULL,
   `MaNhom` int DEFAULT NULL,
-  `HinhAnh` text COLLATE utf8mb4_unicode_ci,
+  `HinhAnh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `DangKinhDoanh` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`MaMon`),
   KEY `MaNhom` (`MaNhom`),
@@ -153,12 +187,12 @@ DROP TABLE IF EXISTS `nhanvien`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nhanvien` (
   `MaNV` int NOT NULL AUTO_INCREMENT,
-  `TenDangNhap` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `MatKhau` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `HoTen` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `VaiTro` enum('Admin','QuanLy','PhucVu','Bep','ThuNgan') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TenDangNhap` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MatKhau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `HoTen` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `VaiTro` enum('Admin','QuanLy','PhucVu','Bep','ThuNgan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `NgayTao` datetime DEFAULT CURRENT_TIMESTAMP,
-  `Avatar` text COLLATE utf8mb4_unicode_ci,
+  `Avatar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`MaNV`),
   UNIQUE KEY `TenDangNhap` (`TenDangNhap`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -183,7 +217,7 @@ DROP TABLE IF EXISTS `nhommon`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nhommon` (
   `MaNhom` int NOT NULL AUTO_INCREMENT,
-  `TenNhom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TenNhom` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`MaNhom`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -199,6 +233,33 @@ INSERT INTO `nhommon` VALUES (1,'Món Cơm'),(2,'Món Mì & Tokbokki'),(3,'Món 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `phieugoi`
+--
+
+DROP TABLE IF EXISTS `phieugoi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phieugoi` (
+  `MaPhieu` int NOT NULL AUTO_INCREMENT,
+  `MaHoaDon` int NOT NULL,
+  `ThoiGianTao` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`MaPhieu`),
+  KEY `MaHoaDon_idx` (`MaHoaDon`),
+  CONSTRAINT `MaHoaDon` FOREIGN KEY (`MaHoaDon`) REFERENCES `hoadon` (`MaHoaDon`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phieugoi`
+--
+
+LOCK TABLES `phieugoi` WRITE;
+/*!40000 ALTER TABLE `phieugoi` DISABLE KEYS */;
+INSERT INTO `phieugoi` VALUES (1,1,'2025-12-23 23:41:04');
+/*!40000 ALTER TABLE `phieugoi` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `thongbao`
 --
 
@@ -207,11 +268,11 @@ DROP TABLE IF EXISTS `thongbao`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `thongbao` (
   `MaTB` int NOT NULL AUTO_INCREMENT,
-  `NoiDung` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `NoiDung` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `DaXem` tinyint(1) DEFAULT '0',
   `ThoiGian` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MaTB`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +281,7 @@ CREATE TABLE `thongbao` (
 
 LOCK TABLES `thongbao` WRITE;
 /*!40000 ALTER TABLE `thongbao` DISABLE KEYS */;
-INSERT INTO `thongbao` VALUES (1,'Bàn 1: Cơm bulgogi đã nấu xong!',1,'2025-12-04 19:06:11'),(2,'Bàn 1: Cơm cá ngừ đã nấu xong!',1,'2025-12-04 19:06:39'),(3,'Bàn 1: Cơm cà ri đã nấu xong!',1,'2025-12-04 19:07:13'),(4,'Bàn 1: Cơm bulgogi đã nấu xong!',1,'2025-12-05 01:15:20'),(5,'Bàn 1: Tokbokki phô mai đã nấu xong!',1,'2025-12-05 13:14:48'),(6,'Bàn 2: Cơm bulgogi đã nấu xong!',1,'2025-12-05 13:30:02'),(7,'Bàn 2: Cơm cá ngừ đã nấu xong!',1,'2025-12-05 13:30:06');
+INSERT INTO `thongbao` VALUES (1,'Bàn 1: Gà cay ngọt đã nấu xong!',0,'2025-12-23 23:41:24'),(2,'Bàn 1: Cơm bulgogi đã nấu xong!',0,'2025-12-23 23:41:24');
 /*!40000 ALTER TABLE `thongbao` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -233,4 +294,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-05 17:15:48
+-- Dump completed on 2025-12-23 23:43:30
