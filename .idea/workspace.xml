@@ -2,48 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cb8385e-75de-473f-9ace-013a13f0b763" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/project/api_order.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/routes_order.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/cashier.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/kitchen.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/manager.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/menu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/notification.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/order-list.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/JS/table-list.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/cashier.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/kitchen.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/login.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/manager.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/menu.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/order.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/static/css/table.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/templates/admin/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/templates/layout/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Restaurant-Order-Manager.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/admin_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/admin_panel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/routes_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/routes_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/routes_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/routes_view.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/static/css/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/admin.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/admin/custom_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/admin/custom_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/admin/master.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/admin/master.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/bep.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/kitchen.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/menu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/order_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/order_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/phucvu.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/table_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/quanly.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/manager.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/thungan.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/cashier.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quan_ly_nha_hang.sql" beforeDir="false" afterPath="$PROJECT_DIR$/quan_ly_nha_hang.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/templates/kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/kitchen.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,27 +13,27 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="37Fxx0ZZZEBbOTypFWDKftKzOy3" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.Restaurant-Order-Manager1.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "git-widget-placeholder": "main",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.Restaurant-Order-Manager1.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Restaurant-Order-Manager1" type="PythonConfigurationType" factoryName="Python">
       <module name="Restaurant-Order-Manager1" />
@@ -117,6 +77,8 @@
       <option name="presentableId" value="Default" />
       <updated>1766512862687</updated>
       <workItem from="1766512864090" duration="4534000" />
+      <workItem from="1766567815203" duration="369000" />
+      <workItem from="1766770947458" duration="1895000" />
     </task>
     <servers />
   </component>
@@ -124,6 +86,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Restaurant_Order_Manager1$Restaurant_Order_Manager1.coverage" NAME="Restaurant-Order-Manager1 Coverage Results" MODIFIED="1766514599108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\BINH\Downloads\Restaurant-Order-Manager1\Restaurant-Order-Manager1\project" />
+    <SUITE FILE_PATH="coverage/Restaurant_Order_Manager1$Restaurant_Order_Manager1.coverage" NAME="Restaurant-Order-Manager1 Coverage Results" MODIFIED="1766771583333" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\BINH\Downloads\Restaurant-Order-Manager1\Restaurant-Order-Manager1\project" />
   </component>
 </project>
