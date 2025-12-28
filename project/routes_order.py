@@ -54,7 +54,8 @@ def order_list():
                            avatar_url=session.get('avatar'))
 @view_bp.route('/bep')
 def bep():
-    if session.get('role') != 'Bep': return redirect(url_for('main.index'))
+    if session.get('role') != 'Bep':
+        return redirect(url_for('main.index'))
     mode = request.args.get('mode', 'order')
     waiting_list = []
     cooking_list = []

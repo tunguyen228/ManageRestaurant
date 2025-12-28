@@ -124,7 +124,7 @@ class ChiTietPhieuGoi(db.Model):
     GhiChu = db.Column(db.String(255))
     TrangThai = db.Column(db.String(50), default='ChoCheBien')
 
-    mon_an = db.relationship('MonAn', backref='chi_tiet_phieugoi', lazy=True)
+    mon_an = db.relationship('MonAn', backref='chi_tiet_phieu_goi', lazy=True)
 
 class ThongBao(db.Model):
     __tablename__ = 'ThongBao'

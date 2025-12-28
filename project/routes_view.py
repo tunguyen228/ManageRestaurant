@@ -65,7 +65,7 @@ def thungan():
     return render_template('cashier.html',
                            list_ban=list_ban,
                            user="Thu Ngân Viên",
-                           avatar_url="")
+                           avatar_url=session.get('avatar'))
 
 @view_bp.route('/quanly')
 def quanly():

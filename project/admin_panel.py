@@ -11,10 +11,6 @@ class SecureModelView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('main.index'))
 
-class HiddenModelView(SecureModelView):
-    def is_visible(self):
-        return False
-
 class DishModelView(SecureModelView):
     create_template = 'admin/custom_form.html'
     edit_template = 'admin/custom_form.html'
@@ -33,12 +29,18 @@ class DishModelView(SecureModelView):
         'HinhAnh': ('Hình ảnh')
     }
 
-class CategoryModelView(HiddenModelView):
+class CategoryModelView(SecureModelView):
+    create_template = 'admin/custom_form.html'
+    edit_template = 'admin/custom_form.html'
+
     column_list = ('MaNhom', 'TenNhom')
     form_columns = ('TenNhom',)
-    column_labels = {'MaNhom': ('ID'), 'TenNhom': ('Category')}
+    column_labels = {'MaNhom': ('Mã nhóm'), 'TenNhom': ('Tên nhóm')}
 
 class StaffModelView(SecureModelView):
+    create_template = 'admin/custom_form.html'
+    edit_template = 'admin/custom_form.html'
+
     column_list = ('TenDangNhap', 'MatKhau','HoTen', 'VaiTro')
 
     column_labels = {
@@ -68,5 +70,5 @@ class MyAdminIndexView(AdminIndexView):
 def init_admin(app, db):
     admin = Admin(app, name=('PTT Quản Trị'), index_view=MyAdminIndexView())
     admin.add_view(DishModelView(MonAn, db.session, name=("Thực Đơn")))
-    admin.add_view(SecureModelView(NhomMon, db.session, name=("Nhóm Món")))
+    admin.add_view(CategoryModelView(NhomMon, db.session, name=("Nhóm Món")))
     admin.add_view(StaffModelView(NhanVien, db.session, name=("Nhân Viên")))

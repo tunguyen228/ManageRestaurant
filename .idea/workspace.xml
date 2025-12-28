@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb8385e-75de-473f-9ace-013a13f0b763" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/templates/kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/kitchen.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/admin_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/admin_panel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/routes_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/routes_order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/routes_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/routes_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/templates/admin/master.html" beforeDir="false" afterPath="$PROJECT_DIR$/project/templates/admin/master.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +82,8 @@
       <updated>1766512862687</updated>
       <workItem from="1766512864090" duration="4534000" />
       <workItem from="1766567815203" duration="369000" />
-      <workItem from="1766770947458" duration="1895000" />
+      <workItem from="1766770947458" duration="10016000" />
+      <workItem from="1766916723709" duration="4002000" />
     </task>
     <servers />
   </component>
@@ -86,6 +91,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Restaurant_Order_Manager1$Restaurant_Order_Manager1.coverage" NAME="Restaurant-Order-Manager1 Coverage Results" MODIFIED="1766771583333" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\BINH\Downloads\Restaurant-Order-Manager1\Restaurant-Order-Manager1\project" />
+    <SUITE FILE_PATH="coverage/Restaurant_Order_Manager1$Restaurant_Order_Manager1.coverage" NAME="Restaurant-Order-Manager1 Coverage Results" MODIFIED="1766929658758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\BINH\Downloads\Restaurant-Order-Manager1\Restaurant-Order-Manager1\project" />
   </component>
 </project>
